@@ -29,6 +29,11 @@ dependencies:
   cupertino_icons: ^1.0.0
   # add this line to your dependencies
   fluttertoast: ^7.1.5
+  carousel_slider: ^2.3.1
+  http: ^0.12.2
+  flutter_cache_manager: ^2.1.0
+  shimmer: ^1.1.2
+  firebase_core: "0.5.3"
 
 dev_dependencies:
   flutter_test:
@@ -50,7 +55,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
-    - images/images.jpg
+    - images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

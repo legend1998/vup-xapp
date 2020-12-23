@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'SignupScreen.dart';
+import 'package:vup/Basket.dart';
+import 'package:vup/LoginScreen.dart';
+import 'package:vup/Product.dart';
+import 'package:vup/Profile.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,7 +32,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SignupScreen(),
+      home: LoginScreen(),
     );
   }
 }
@@ -46,6 +50,8 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
+
+  List<String> get list => null;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -72,14 +78,25 @@ class _MyHomePageState extends State<MyHomePage> {
             _scaffodKey.currentState.openDrawer();
           },
         ),
+
         title: Text(widget.title),
+
         actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              // open searh area
+              showSearch(context: context, delegate: Search(widget.list));
+            },
+          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: IconButton(
               icon: Icon(Icons.shopping_basket),
               onPressed: () {
                 //open basket
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Basket()));
               },
             ),
           ),
@@ -120,6 +137,14 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Divider(color: Colors.blue),
           ListTile(
+            leading: Icon(Icons.person),
+            title: Text("Profile"),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()));
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.category),
             title: Text("Categories"),
           ),
@@ -141,27 +166,162 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       )),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: SingleChildScrollView(
         child: Column(
-            // Column is also a layout widget. It takes a list of children and
-            // arranges them vertically. By default, it sizes itself to fit its
-            // children horizontally, and tries to be as tall as its parent.
-            //
-            // Invoke "debug painting" (press "p" in the console, choose the
-            // "Toggle Debug Paint" action from the Flutter Inspector in Android
-            // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-            // to see the wireframe for each widget.
-            //
-            // Column has various properties to control how it sizes itself and
-            // how it positions its children. Here we use mainAxisAlignment to
-            // center the children vertically; the main axis here is the vertical
-            // axis because Columns are vertical (the cross axis would be
-            // horizontal).
-
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              child: CarouselSlider(
+                options: CarouselOptions(height: 140.0, autoPlay: true),
+                items: [1, 2, 3].map((i) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(horizontal: 5.0),
+                          decoration: BoxDecoration(color: Colors.grey[100]),
+                          child: Image.asset('images/banner$i.jpg'));
+                    },
+                  );
+                }).toList(),
+              ),
             ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: Text(
+                "Top selling products",
+                style: TextStyle(fontSize: 22, color: Colors.grey[600]),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 22),
+              height: 150,
+              child: ListView.builder(
+                  itemCount: 8,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      child: Container(
+                          margin: EdgeInsets.only(right: 10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                  width: 1,
+                                  style: BorderStyle.solid,
+                                  color: Colors.grey[300])),
+                          child: Column(
+                            children: [
+                              new Image.network(
+                                  'https://source.unsplash.com/120x120/?cloth,fashion,$index'),
+                              Text('product ${index + 1}')
+                            ],
+                          )),
+                      onTap: () {
+                        // go to product page
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProductScreen()));
+                      },
+                    );
+                  }),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: Text(
+                "Today's Trendig",
+                style: TextStyle(fontSize: 22, color: Colors.grey[600]),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 22),
+              alignment: Alignment.center,
+              height: 700,
+              child: ListView.builder(
+                  itemCount: 8,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return Container(
+                        margin: EdgeInsets.only(right: 10, bottom: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                                width: 1,
+                                style: BorderStyle.solid,
+                                color: Colors.grey[300])),
+                        child: Row(
+                          children: [
+                            new Image.network(
+                                'https://source.unsplash.com/120x120/?cloth,fashion,$index'),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Text('product ${index + 1}'),
+                          ],
+                        ));
+                  }),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class Search extends SearchDelegate {
+  final List<String> listofproducts;
+
+  Search(this.listofproducts);
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    // TODO: implement buildActions
+    return <Widget>[
+      IconButton(
+        icon: Icon(Icons.close),
+        onPressed: () {
+          query = "";
+        },
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    // TODO: implement buildLeading
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+  }
+
+  String selectedtext;
+
+  @override
+  Widget buildResults(BuildContext context) {
+    // TODO: implement buildResults
+    return Container(child: Center(child: Text(selectedtext)));
+  }
+
+  List<String> recentList = ["text 4", "text 3"];
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    // TODO: implement buildSuggestions
+    List<String> suggestionList = [];
+//    query.isEmpty
+    //      ? suggestionList = recentList
+    //    : suggestionList
+    //      .addAll(listofproducts.where((element) => element.contains(query)));
+
+    return ListView.builder(
+      itemCount: suggestionList.length,
+      itemBuilder: (context, index) {
+        return ListTile(title: Text(suggestionList[index]));
+      },
     );
   }
 }
