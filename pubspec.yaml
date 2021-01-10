@@ -34,6 +34,9 @@ dependencies:
   flutter_cache_manager: ^2.1.0
   shimmer: ^1.1.2
   firebase_core: "0.5.3"
+  cached_network_image: ^2.5.0
+  fancy_shimmer_image: ^1.2.0
+  firebase_storage: "^5.2.0"
 
 dev_dependencies:
   flutter_test:

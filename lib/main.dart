@@ -1,35 +1,30 @@
+import 'dart:core';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:vup/Basket.dart';
 import 'package:vup/LoginScreen.dart';
-import 'package:vup/Product.dart';
 import 'package:vup/Profile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:vup/model/Services.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Vup',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: LoginScreen(),
@@ -58,6 +53,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Future _bannerTopUrls;
+
+  @override
+  void initState() {
+    super.initState();
+    _bannerTopUrls = Services.getTopBannerUrls();
+  }
+
   @override
   Widget build(BuildContext context) {
     var _scaffodKey = GlobalKey<ScaffoldState>();
@@ -170,104 +173,208 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              child: CarouselSlider(
-                options: CarouselOptions(height: 140.0, autoPlay: true),
-                items: [1, 2, 3].map((i) {
-                  return Builder(
-                    builder: (BuildContext context) {
+            FutureBuilder(
+                future: _bannerTopUrls,
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.done:
+                      return CarouselSlider.builder(
+                        options: CarouselOptions(
+                            autoPlay: true,
+                            aspectRatio: 16 / 9,
+                            enlargeCenterPage: true),
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          var image = snapshot.data[index];
+                          return Image.network(image);
+                        },
+                      );
+                    case ConnectionState.waiting:
                       return Container(
-                          width: MediaQuery.of(context).size.width,
-                          margin: EdgeInsets.symmetric(horizontal: 5.0),
-                          decoration: BoxDecoration(color: Colors.grey[100]),
-                          child: Image.asset('images/banner$i.jpg'));
-                    },
-                  );
-                }).toList(),
-              ),
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.white24,
+                          child: Container(
+                            height: 150,
+                            color: Colors.white54,
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                      );
+                    default:
+                      return Text("default");
+                  }
+                }),
+            Divider(
+              color: Colors.grey[500],
+              endIndent: 10.0,
+              indent: 10.0,
+            ),
+            categories(),
+            SizedBox(
+              height: 30,
             ),
             Container(
-              margin: EdgeInsets.all(10),
+              margin: EdgeInsets.only(left: 10),
               child: Text(
-                "Top selling products",
-                style: TextStyle(fontSize: 22, color: Colors.grey[600]),
+                "new Arrivals",
+                style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 22,
+                    fontFamily: "roboto"),
               ),
             ),
+            newArrivals(),
             Container(
-              padding: EdgeInsets.only(left: 22),
-              height: 150,
-              child: ListView.builder(
-                  itemCount: 8,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      child: Container(
-                          margin: EdgeInsets.only(right: 10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  width: 1,
-                                  style: BorderStyle.solid,
-                                  color: Colors.grey[300])),
-                          child: Column(
-                            children: [
-                              new Image.network(
-                                  'https://source.unsplash.com/120x120/?cloth,fashion,$index'),
-                              Text('product ${index + 1}')
-                            ],
-                          )),
-                      onTap: () {
-                        // go to product page
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProductScreen()));
-                      },
-                    );
-                  }),
-            ),
-            Container(
-              margin: EdgeInsets.all(10),
+              margin: EdgeInsets.only(left: 10),
               child: Text(
-                "Today's Trendig",
-                style: TextStyle(fontSize: 22, color: Colors.grey[600]),
+                "Featured ",
+                style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 22,
+                    fontFamily: "roboto"),
               ),
             ),
+            featured(),
             Container(
-              padding: EdgeInsets.only(left: 22),
-              alignment: Alignment.center,
-              height: 700,
-              child: ListView.builder(
-                  itemCount: 8,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return Container(
-                        margin: EdgeInsets.only(right: 10, bottom: 10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                                width: 1,
-                                style: BorderStyle.solid,
-                                color: Colors.grey[300])),
-                        child: Row(
-                          children: [
-                            new Image.network(
-                                'https://source.unsplash.com/120x120/?cloth,fashion,$index'),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Text('product ${index + 1}'),
-                          ],
-                        ));
-                  }),
+              margin: EdgeInsets.only(left: 10),
+              child: Text(
+                "Trending now ",
+                style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 22,
+                    fontFamily: "roboto"),
+              ),
             ),
+            trendingNow(),
           ],
         ),
       ),
     );
   }
 }
+
+Widget newArrivals() => Container(
+      height: 200,
+    );
+Widget trendingNow() => Container(
+      height: 200,
+    );
+Widget featured() => Container(
+      height: 200,
+    );
+
+// categories on home  page
+
+Widget categories() => Container(
+      alignment: Alignment.center,
+      height: 40,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          Container(
+            alignment: Alignment.center,
+            height: 40,
+            margin: EdgeInsets.all(3),
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.blue),
+                borderRadius: BorderRadius.circular(5)),
+            child: Text("tops"),
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: 40,
+            margin: EdgeInsets.all(3),
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.blue),
+                borderRadius: BorderRadius.circular(5)),
+            child: Text("saree"),
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: 40,
+            margin: EdgeInsets.all(3),
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.blue),
+                borderRadius: BorderRadius.circular(5)),
+            child: Text("T-shirts"),
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: 40,
+            margin: EdgeInsets.all(3),
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.blue),
+                borderRadius: BorderRadius.circular(5)),
+            child: Text("Pyjama"),
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: 40,
+            margin: EdgeInsets.all(3),
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.blue),
+                borderRadius: BorderRadius.circular(5)),
+            child: Text("Jeans"),
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: 40,
+            margin: EdgeInsets.all(3),
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.blue),
+                borderRadius: BorderRadius.circular(5)),
+            child: Text("Shirts"),
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: 40,
+            margin: EdgeInsets.all(3),
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.blue),
+                borderRadius: BorderRadius.circular(5)),
+            child: Text("Trending"),
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: 40,
+            margin: EdgeInsets.all(3),
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.blue),
+                borderRadius: BorderRadius.circular(5)),
+            child: Text("Winter Wear"),
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: 40,
+            margin: EdgeInsets.all(3),
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.blue),
+                borderRadius: BorderRadius.circular(5)),
+            child: Text("Casual"),
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: 40,
+            margin: EdgeInsets.all(3),
+            padding: EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.blue),
+                borderRadius: BorderRadius.circular(5)),
+            child: Text("Brands"),
+          ),
+        ],
+      ),
+    );
 
 class Search extends SearchDelegate {
   final List<String> listofproducts;
