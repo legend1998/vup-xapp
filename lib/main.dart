@@ -4,11 +4,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:vup/Basket.dart';
+import 'package:vup/Categories.dart';
 import 'package:vup/LoginScreen.dart';
+import 'package:vup/Orders.dart';
 import 'package:vup/Profile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:vup/about.dart';
 import 'package:vup/model/Services.dart';
+import 'package:vup/wishlist.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -148,20 +152,35 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.category),
-            title: Text("Categories"),
-          ),
+              leading: Icon(Icons.category),
+              title: Text("Categories"),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CategoryScreen()));
+              }),
           ListTile(
             leading: Icon(Icons.favorite),
             title: Text("Wishlist"),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Wishlist()));
+            },
           ),
           ListTile(
             leading: Icon(Icons.assignment),
             title: Text("Orders"),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Orders()));
+            },
           ),
           ListTile(
             leading: Icon(Icons.info_rounded),
             title: Text("About"),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => About()));
+            },
           ),
           ListTile(
             leading: Icon(Icons.help),

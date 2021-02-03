@@ -37,6 +37,8 @@ dependencies:
   cached_network_image: ^2.5.0
   fancy_shimmer_image: ^1.2.0
   firebase_storage: "^5.2.0"
+  hive: ^1.4.4+1
+  path_provider: ^1.6.27
 
 dev_dependencies:
   flutter_test:
