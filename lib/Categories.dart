@@ -16,44 +16,52 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      catlist = Services.getCategory();
-    });
+    catlist = Services.getCategory();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      child: FutureBuilder(
+      appBar: AppBar(
+        title: Text("Category"),
+        backgroundColor: Colors.blue,
+      ),
+      body: FutureBuilder(
         future: catlist,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               {
-                var data = snapshot.data;
-                return ListView.builder(
-                  itemCount: data.length,
-                  itemBuilder: (context, index) {
-                    Category temp = data[index];
-                    return ListTile(title: Text(temp.category));
-                  },
+                List data = snapshot.data;
+                if (data != null) {
+                  return ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      Category cat = data[index];
+                      return ListTile(
+                        title: Text(cat.category),
+                      );
+                    },
+                  );
+                }
+                return Center(
+                  child: Text(data.toString()),
                 );
               }
             case ConnectionState.waiting:
-              {
-                return Container(
-                  child: Shimmer.fromColors(
-                    baseColor: Colors.grey[300],
-                    highlightColor: Colors.white24,
-                    child: Container(
-                      height: 150,
-                      color: Colors.white54,
-                    ),
+              return Container(
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300],
+                  highlightColor: Colors.white24,
+                  child: Container(
+                    height: 150,
+                    color: Colors.white54,
                   ),
-                  alignment: Alignment.center,
-                );
-              }
+                ),
+                alignment: Alignment.center,
+              );
+
             default:
               {
                 return Text("default");
@@ -61,6 +69,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
           }
         },
       ),
-    ));
+    );
   }
 }

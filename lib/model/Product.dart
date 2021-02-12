@@ -10,6 +10,9 @@ List<Products> productsFromJson(String str) =>
 String productsToJson(List<Products> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+Products singleProductFromjson(String str) =>
+    Products.fromJson(json.decode(str));
+
 class Products {
   Products({
     this.category,
@@ -39,7 +42,7 @@ class Products {
   List<String> tags;
   List<String> imageUrl;
   List<Detail> details;
-  List<dynamic> reviews;
+  List<Review> reviews;
   bool featured;
   String id;
   String pid;
@@ -63,7 +66,7 @@ class Products {
         imageUrl: List<String>.from(json["imageURL"].map((x) => x)),
         details:
             List<Detail>.from(json["details"].map((x) => Detail.fromJson(x))),
-        reviews: List<dynamic>.from(json["reviews"].map((x) => x)),
+        reviews: List<Review>.from(json["reviews"].map((x) => x.fromJson(x))),
         createdAt: DateTime.parse(json["createdAt"]),
         featured: json["featured"],
         id: json["_id"],
@@ -87,7 +90,7 @@ class Products {
         "tags": List<dynamic>.from(tags.map((x) => x)),
         "imageURL": List<dynamic>.from(imageUrl.map((x) => x)),
         "details": List<dynamic>.from(details.map((x) => x.toJson())),
-        "reviews": List<dynamic>.from(reviews.map((x) => x)),
+        "reviews": List<Review>.from(reviews.map((x) => x.toJson())),
         "createdAt": createdAt.toIso8601String(),
         "featured": featured,
         "_id": id,
@@ -124,5 +127,22 @@ class Detail {
   Map<String, dynamic> toJson() => {
         "field": field,
         "value": value,
+      };
+}
+
+class Review {
+  Review({this.user, this.review});
+
+  String user;
+  String review;
+
+  factory Review.fromJson(Map<String, dynamic> json) => Review(
+        user: json["user"],
+        review: json["review"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "user": user,
+        "review": user,
       };
 }

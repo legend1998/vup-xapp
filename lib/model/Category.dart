@@ -6,13 +6,15 @@ import 'dart:convert';
 
 import 'package:hive/hive.dart';
 
+part "Category.g.dart";
+
 List<Category> categoryFromJson(String str) =>
     List<Category>.from(json.decode(str).map((x) => Category.fromJson(x)));
 
 String categoryToJson(List<Category> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-@HiveType()
+@HiveType(typeId: 3)
 class Category {
   Category({
     this.category,

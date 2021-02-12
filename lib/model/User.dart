@@ -4,10 +4,15 @@
 
 import 'dart:convert';
 
+import 'package:hive/hive.dart';
+
+part 'User.g.dart';
+
 User userFromJson(String str) => User.fromJson(json.decode(str));
 
 String userToJson(User data) => json.encode(data.toJson());
 
+@HiveType(typeId: 4)
 class User {
   User({
     this.dateJoined,
@@ -28,21 +33,37 @@ class User {
     this.v,
   });
 
+  @HiveField(0)
   DateTime dateJoined;
+  @HiveField(1)
   List<dynamic> address;
+  @HiveField(2)
   String role;
+  @HiveField(3)
   List<dynamic> cart;
+  @HiveField(4)
   List<dynamic> wishlist;
+  @HiveField(5)
   List<dynamic> orders;
+  @HiveField(6)
   String id;
+  @HiveField(7)
   String uid;
+  @HiveField(8)
   String fname;
+  @HiveField(9)
   String lname;
+  @HiveField(10)
   String email;
+  @HiveField(11)
   String password;
+  @HiveField(12)
   String phone;
+  @HiveField(13)
   DateTime createdAt;
+  @HiveField(14)
   DateTime updatedAt;
+  @HiveField(15)
   int v;
 
   factory User.fromJson(Map<String, dynamic> json) => User(

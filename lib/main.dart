@@ -1,7 +1,9 @@
 import 'dart:core';
-
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:vup/Basket.dart';
 import 'package:vup/Categories.dart';
@@ -11,12 +13,21 @@ import 'package:vup/Profile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:vup/about.dart';
+import 'package:vup/model/Category.dart';
+import 'package:vup/model/ProductLite.dart';
 import 'package:vup/model/Services.dart';
+import 'package:vup/model/User.dart';
+import 'package:vup/utils/productTile.dart';
 import 'package:vup/wishlist.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  Directory dir = await getExternalStorageDirectory();
+  Hive.init(dir.path);
+  Hive.registerAdapter(CategoryAdapter());
+  Hive.registerAdapter(ProductLiteAdapter());
+  Hive.registerAdapter(UserAdapter());
   runApp(MyApp());
 }
 
@@ -29,6 +40,7 @@ class MyApp extends StatelessWidget {
       title: 'Vup',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: "Open-Sans",
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: LoginScreen(),
@@ -274,7 +286,30 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 Widget newArrivals() => Container(
-      height: 200,
+      padding: EdgeInsets.all(5),
+      height: 1750,
+      child: FutureBuilder(
+          future: Services.getlatestproducts(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                {
+                  var data = snapshot.data;
+                  return GridView.count(
+                    physics: NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    children: List.generate(data.length, (index) {
+                      return productTile(data[index], context);
+                    }),
+                  );
+                }
+              case ConnectionState.waiting:
+                return Text("waiting");
+
+              default:
+                return Text("something went wrong");
+            }
+          }),
     );
 Widget trendingNow() => Container(
       height: 200,
@@ -286,114 +321,39 @@ Widget featured() => Container(
 // categories on home  page
 
 Widget categories() => Container(
-      alignment: Alignment.center,
-      height: 40,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          Container(
-            alignment: Alignment.center,
-            height: 40,
-            margin: EdgeInsets.all(3),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.blue),
-                borderRadius: BorderRadius.circular(5)),
-            child: Text("tops"),
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: 40,
-            margin: EdgeInsets.all(3),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.blue),
-                borderRadius: BorderRadius.circular(5)),
-            child: Text("saree"),
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: 40,
-            margin: EdgeInsets.all(3),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.blue),
-                borderRadius: BorderRadius.circular(5)),
-            child: Text("T-shirts"),
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: 40,
-            margin: EdgeInsets.all(3),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.blue),
-                borderRadius: BorderRadius.circular(5)),
-            child: Text("Pyjama"),
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: 40,
-            margin: EdgeInsets.all(3),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.blue),
-                borderRadius: BorderRadius.circular(5)),
-            child: Text("Jeans"),
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: 40,
-            margin: EdgeInsets.all(3),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.blue),
-                borderRadius: BorderRadius.circular(5)),
-            child: Text("Shirts"),
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: 40,
-            margin: EdgeInsets.all(3),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.blue),
-                borderRadius: BorderRadius.circular(5)),
-            child: Text("Trending"),
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: 40,
-            margin: EdgeInsets.all(3),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.blue),
-                borderRadius: BorderRadius.circular(5)),
-            child: Text("Winter Wear"),
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: 40,
-            margin: EdgeInsets.all(3),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.blue),
-                borderRadius: BorderRadius.circular(5)),
-            child: Text("Casual"),
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: 40,
-            margin: EdgeInsets.all(3),
-            padding: EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.blue),
-                borderRadius: BorderRadius.circular(5)),
-            child: Text("Brands"),
-          ),
-        ],
-      ),
-    );
+    alignment: Alignment.center,
+    height: 40,
+    child: FutureBuilder(
+      future: Services.getCategory(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            {
+              var data = snapshot.data;
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  Category cat = data[index];
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    padding: EdgeInsets.all(5),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(2),
+                        border: Border.all(width: 1, color: Colors.blue)),
+                    child: Text(cat.category),
+                  );
+                },
+              );
+            }
+          case ConnectionState.waiting:
+            return Text("waiting");
+          default:
+            return Text("something went wrong");
+        }
+      },
+    ));
 
 class Search extends SearchDelegate {
   final List<String> listofproducts;
@@ -424,12 +384,33 @@ class Search extends SearchDelegate {
     );
   }
 
-  String selectedtext;
-
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
-    return Container(child: Center(child: Text(selectedtext)));
+    return Container(
+        child: FutureBuilder(
+      future: Services.searchResult(query),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            var data = snapshot.data;
+            return ListView.builder(
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  return productSearchTile(data[index], context);
+                });
+          //to be worked here
+          case ConnectionState.waiting:
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          default:
+            return Center(
+              child: Text("something went wrong"),
+            );
+        }
+      },
+    ));
   }
 
   List<String> recentList = ["text 4", "text 3"];
@@ -438,10 +419,7 @@ class Search extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     // TODO: implement buildSuggestions
     List<String> suggestionList = [];
-//    query.isEmpty
-    //      ? suggestionList = recentList
-    //    : suggestionList
-    //      .addAll(listofproducts.where((element) => element.contains(query)));
+    suggestionList = recentList;
 
     return ListView.builder(
       itemCount: suggestionList.length,
