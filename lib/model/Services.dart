@@ -26,7 +26,6 @@ class Services {
         final User user = userFromJson(response.body);
         var person = await Hive.openBox("user");
         person.add(user);
-        Hive.close();
         print("added in box");
         return true;
       }
@@ -46,6 +45,40 @@ class Services {
       return person;
     } else
       return null;
+  }
+
+  static Future<String> addToBasket(Products p) async {
+    HiveService hiveService = new HiveService();
+    bool exist = await hiveService.isExists(boxName: "user");
+    if (exist) {
+      var box = await Hive.openBox("user");
+      User person = box.getAt(0);
+      if (person.cart.contains(p)) {
+        return "already in basket";
+      } else {
+        person.cart.add(p);
+        return "added in basket";
+      }
+    } else {
+      return "log in to add in basket";
+    }
+  }
+
+  static Future<String> addToWishlist(Products p) async {
+    HiveService hiveService = new HiveService();
+    bool exist = await hiveService.isExists(boxName: "user");
+    if (exist) {
+      var box = await Hive.openBox("user");
+      User person = box.getAt(0);
+      if (person.wishlist.contains(p)) {
+        return "already in wishlist";
+      } else {
+        person.wishlist.add(p);
+        return "added in wishlist";
+      }
+    } else {
+      return "log in to add in wishlist";
+    }
   }
 
   static Future getlatestproducts() async {

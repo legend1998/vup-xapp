@@ -14,7 +14,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -26,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
       var response = await Services.loginUser(
           _usernameController.text, _passwordController.text);
       if (response) {
-        Navigator.push(
+        Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) => MyHomePage(

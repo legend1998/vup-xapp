@@ -2,6 +2,7 @@ import 'dart:core';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -12,11 +13,13 @@ import 'package:vup/Orders.dart';
 import 'package:vup/Profile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:vup/Splashscreen.dart';
 import 'package:vup/about.dart';
 import 'package:vup/model/Category.dart';
 import 'package:vup/model/ProductLite.dart';
 import 'package:vup/model/Services.dart';
 import 'package:vup/model/User.dart';
+import 'package:vup/model/cacheHive.dart';
 import 'package:vup/utils/productTile.dart';
 import 'package:vup/wishlist.dart';
 
@@ -43,7 +46,7 @@ class MyApp extends StatelessWidget {
         fontFamily: "Open-Sans",
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginScreen(),
+      home: SplashScreen(),
     );
   }
 }
@@ -70,11 +73,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Future _bannerTopUrls;
+  Future user;
 
   @override
   void initState() {
     super.initState();
     _bannerTopUrls = Services.getTopBannerUrls();
+    user = Services.getUser();
   }
 
   @override
@@ -109,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.only(right: 10),
             child: IconButton(
               icon: Icon(Icons.shopping_basket),
               onPressed: () {
@@ -128,29 +133,41 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: ListView(
-              children: [
-                Container(
-                    alignment: Alignment.topLeft,
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Colors.blue,
-                    )),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 5),
-                  child: Text(
-                    "profile name",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 18, color: Colors.black54),
-                  ),
-                ),
-                Text(
-                  "profile  email",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 14, color: Colors.black45),
-                )
-              ],
+            child: FutureBuilder(
+              future: user,
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.done:
+                    User userData = snapshot.data;
+                    return ListView(
+                      children: [
+                        Container(
+                            alignment: Alignment.topLeft,
+                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            child: CircleAvatar(
+                              radius: 40,
+                              backgroundColor: Colors.blue,
+                            )),
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: 5),
+                          child: Text(
+                            userData.fname,
+                            textAlign: TextAlign.left,
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.black54),
+                          ),
+                        ),
+                        Text(
+                          userData.email,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontSize: 14, color: Colors.black45),
+                        )
+                      ],
+                    );
+                  default:
+                    return Text("something went wrong");
+                }
+              },
             ),
             decoration: BoxDecoration(color: Colors.white),
           ),
@@ -197,6 +214,21 @@ class _MyHomePageState extends State<MyHomePage> {
           ListTile(
             leading: Icon(Icons.help),
             title: Text("Faqs"),
+          ),
+          ListTile(
+            leading: Icon(Icons.exit_to_app),
+            title: Text("Logout"),
+            onTap: () async {
+              HiveService hiveService = new HiveService();
+              await hiveService.deleteBox("user");
+              if (await hiveService.isExists(boxName: "user")) {
+                Fluttertoast.showToast(
+                    msg: "something went wrong can't log out.");
+              } else {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
+              }
+            },
           ),
         ],
       )),
@@ -304,7 +336,17 @@ Widget newArrivals() => Container(
                   );
                 }
               case ConnectionState.waiting:
-                return Text("waiting");
+                return Container(
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.grey[300],
+                    highlightColor: Colors.white24,
+                    child: Container(
+                      height: 150,
+                      color: Colors.white54,
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                );
 
               default:
                 return Text("something went wrong");
@@ -348,7 +390,17 @@ Widget categories() => Container(
               );
             }
           case ConnectionState.waiting:
-            return Text("waiting");
+            return Container(
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300],
+                highlightColor: Colors.white24,
+                child: Container(
+                  height: 50,
+                  color: Colors.white54,
+                ),
+              ),
+              alignment: Alignment.center,
+            );
           default:
             return Text("something went wrong");
         }
@@ -413,7 +465,7 @@ class Search extends SearchDelegate {
     ));
   }
 
-  List<String> recentList = ["text 4", "text 3"];
+  List<String> recentList = [];
 
   @override
   Widget buildSuggestions(BuildContext context) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:vup/model/Services.dart';
+import 'package:vup/utils/productTile.dart';
 
 class Basket extends StatefulWidget {
   Basket({Key key}) : super(key: key);
@@ -8,34 +10,19 @@ class Basket extends StatefulWidget {
 }
 
 class _BasketState extends State<Basket> {
+  Future _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _user = Services.getUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          leading: IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              //open drawer
-            },
-          ),
-
-          actions: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: IconButton(
-                icon: Icon(Icons.shopping_basket),
-                onPressed: () {
-                  //open basket
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Basket()));
-                },
-              ),
-            ),
-            Icon(Icons.more_vert),
-          ],
-          backgroundColor: Colors.blue,
+          title: Text("vup"),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -45,37 +32,31 @@ class _BasketState extends State<Basket> {
                 margin: EdgeInsets.only(top: 15, left: 20),
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "your basket",
+                  "My basket",
                   style: TextStyle(fontSize: 22, color: Colors.grey[600]),
                 ),
               ),
               Container(
-                padding: EdgeInsets.only(left: 22, top: 30),
+                padding: EdgeInsets.only(left: 10, top: 30),
                 height: 400,
                 alignment: Alignment.center,
-                child: ListView.builder(
-                    itemCount: 3,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Container(
-                          margin: EdgeInsets.only(right: 10, bottom: 10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                  width: 1,
-                                  style: BorderStyle.solid,
-                                  color: Colors.grey[300])),
-                          child: Row(
-                            children: [
-                              new Image.network(
-                                  'https://source.unsplash.com/120x120/?cloth,fashion,$index'),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Text('product ${index + 1}'),
-                            ],
-                          ));
-                    }),
+                child: FutureBuilder(
+                  future: _user,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.done:
+                        var data = snapshot.data.cart;
+                        return ListView.builder(
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                            return productBasketTile(data[index], context);
+                          },
+                        );
+                      default:
+                        return Text("something went wrong");
+                    }
+                  },
+                ),
               ),
               Divider(
                 color: Colors.grey,

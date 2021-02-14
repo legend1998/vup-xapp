@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vup/model/Product.dart';
 import 'package:vup/model/Services.dart';
-import 'package:vup/utils/productTile.dart';
 
 class ProductScreen extends StatefulWidget {
   ProductScreen({Key key, this.id}) : super(key: key);
@@ -25,28 +25,9 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("Vup"),
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {
-            //open drawer
-          },
-        ),
-
-        actions: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: IconButton(
-              icon: Icon(Icons.shopping_basket),
-              onPressed: () {
-                //open basket
-              },
-            ),
-          ),
-          Icon(Icons.more_vert),
-        ],
-        backgroundColor: Colors.blue,
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
@@ -122,8 +103,10 @@ class _ProductScreenState extends State<ProductScreen> {
                             child: IconButton(
                               icon: Icon(Icons.favorite),
                               color: Colors.blue,
-                              onPressed: () {
+                              onPressed: () async {
                                 //do something
+                                var result = await Services.addToWishlist(data);
+                                Fluttertoast.showToast(msg: result);
                               },
                             ),
                           ),
@@ -205,8 +188,12 @@ class _ProductScreenState extends State<ProductScreen> {
                                 "Add in Basket",
                                 style: TextStyle(color: Colors.white),
                               ),
-                              onPressed: () {
+                              onPressed: () async {
                                 // go somewhere
+                                var result = await Services.addToBasket(data);
+                                Fluttertoast.showToast(
+                                  msg: result,
+                                );
                               },
                             ),
                             decoration: BoxDecoration(

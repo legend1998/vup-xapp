@@ -42,6 +42,7 @@ Widget productTile(ProductLite p, BuildContext context) => Card(
 Widget productSearchTile(ProductLite p, BuildContext context) => Card(
       child: Container(
         height: 100,
+        width: MediaQuery.of(context).size.width * 0.9,
         child: Row(
           children: [
             SizedBox(
@@ -50,7 +51,7 @@ Widget productSearchTile(ProductLite p, BuildContext context) => Card(
                 width: 90,
               ),
               height: 90,
-              width: 90,
+              width: 120,
             ),
             InkWell(
               onTap: () {
@@ -59,22 +60,72 @@ Widget productSearchTile(ProductLite p, BuildContext context) => Card(
                     MaterialPageRoute(
                         builder: (context) => ProductScreen(id: p.id)));
               },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    p.title,
-                    style: TextStyle(
-                      fontSize: 16,
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.6,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        p.title,
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
-                  ),
-                  Text('★ rating'),
-                  Text(
-                    '₹ ${p.sellPrice.toString()}',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  )
-                ],
+                    Text('★ rating'),
+                    Text(
+                      '₹ ${p.sellPrice.toString()}',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+Widget productBasketTile(Products p, BuildContext context) => Card(
+      child: Container(
+        height: 100,
+        child: Row(
+          children: [
+            SizedBox(
+              child: Image.network(
+                p.thumbnailUrl,
+                width: 90,
+              ),
+              height: 90,
+              width: 120,
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProductScreen(id: p.id)));
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.6,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      p.title,
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text('★ rating'),
+                    Text(
+                      '₹ ${p.sellPrice.toString()}',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
               ),
             )
           ],

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:vup/model/Services.dart';
+import 'package:vup/model/User.dart';
 
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({Key key}) : super(key: key);
@@ -8,6 +10,21 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  User person;
+  bool loading = false;
+  @override
+  void initState() {
+    super.initState();
+    loaddata();
+  }
+
+  loaddata() async {
+    person = await Services.getUser();
+    setState(() {
+      loading = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,22 +71,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: <Widget>[
                 ListTile(
                     title: Text("Name"),
-                    subtitle: Text("john doe "),
+                    subtitle: loading
+                        ? Text('${person.fname} ${person.lname}')
+                        : Text("john doe "),
                     leading: Icon(Icons.person),
                     trailing: Icon(Icons.edit)),
                 ListTile(
                     title: Text("Mobile Number"),
-                    subtitle: Text("9999999999"),
+                    subtitle: loading ? Text(person.phone) : Text("9999999999"),
                     leading: Icon(Icons.mobile_friendly),
                     trailing: Icon(Icons.edit)),
                 ListTile(
                     title: Text("E-mail"),
-                    subtitle: Text("john.doe@gmail.com"),
+                    subtitle: loading
+                        ? Text(person.email)
+                        : Text("john.doe@gmail.com"),
                     leading: Icon(Icons.email),
                     trailing: Icon(Icons.edit)),
                 ListTile(
                     title: Text("Address "),
-                    subtitle: Text("113 street highway , New York , USA "),
+                    subtitle: loading
+                        ? Text('${person.address.toString()}')
+                        : Text("113 street highway , New York , USA "),
                     leading: Icon(Icons.place),
                     isThreeLine: true,
                     trailing: Icon(Icons.edit)),
