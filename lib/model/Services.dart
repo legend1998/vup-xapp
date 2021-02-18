@@ -7,6 +7,7 @@ import 'Category.dart';
 import "package:http/http.dart" as http;
 import 'User.dart';
 import 'cacheHive.dart';
+import 'package:uuid/uuid.dart';
 
 class Services {
   static const url = "http://vup-api.herokuapp.com";
@@ -250,6 +251,73 @@ class Services {
     } catch (e) {
       print(e);
       return List();
+    }
+  }
+
+  static Future makeOrder() async {
+    HiveService hiveService = new HiveService();
+    bool exist = await hiveService.isExists(boxName: "user");
+    if (!exist) return "no user data exist";
+
+    // so much work to do here
+
+    try {
+      final response = await http.post('$url/order/makeorder',
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'authorization': 'dklfhaewowi32047230jlks',
+          },
+          body: jsonEncode(<String, dynamic>{
+            "totalAmount": "400",
+            "userid": "5fd845491d950472306d3e37",
+            "products": ["sdfds", "sdfd"],
+            "status": "paid"
+          }));
+      if (200 == response.statusCode) {
+        final List<ProductLite> result = productLiteFromJson(response.body);
+        print(response.statusCode);
+        return result;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future signupUser(
+      String username, String email, String phone, String password) async {
+    var uuid = Uuid();
+    var user = username.split(" ");
+    print(user);
+    try {
+      final response = await http.post(
+        '$url/user/create',
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'authorization': 'dklfhaewowi32047230jlks'
+        },
+        body: jsonEncode(<String, String>{
+          "uid": uuid.v4(),
+          "fname": user[0],
+          "lname": user.length == 2 ? user[1] : "",
+          "email": email,
+          "password": password,
+          "phone": phone,
+          "role": "user"
+        }),
+      );
+      print(response.statusCode);
+      print(response.body);
+      if (200 == response.statusCode) {
+        final User user = userFromJson(response.body);
+        var person = await Hive.openBox("user");
+        person.add(user);
+        print("added in box");
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
     }
   }
 }

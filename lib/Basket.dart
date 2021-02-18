@@ -45,13 +45,23 @@ class _BasketState extends State<Basket> {
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.done:
-                        var data = snapshot.data.cart;
-                        return ListView.builder(
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            return productBasketTile(data[index], context);
-                          },
-                        );
+                        {
+                          var data = snapshot.data.cart;
+                          if (data.isNotEmpty) {
+                            return ListView.builder(
+                              itemCount: data.length,
+                              itemBuilder: (context, index) {
+                                return productBasketTile(data[index], context);
+                              },
+                            );
+                          } else
+                            return Container(
+                              child: Center(
+                                child: Text("basket is empty"),
+                              ),
+                            );
+                        }
+                        break;
                       default:
                         return Text("something went wrong");
                     }

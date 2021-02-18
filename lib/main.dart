@@ -146,6 +146,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             padding: EdgeInsets.symmetric(horizontal: 5),
                             child: CircleAvatar(
                               radius: 40,
+                              backgroundImage: NetworkImage(
+                                  'https://ui-avatars.com/api/?name=${userData.fname}+${userData.lname}&size=128'),
                               backgroundColor: Colors.blue,
                             )),
                         Container(
@@ -210,10 +212,6 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => About()));
             },
-          ),
-          ListTile(
-            leading: Icon(Icons.help),
-            title: Text("Faqs"),
           ),
           ListTile(
             leading: Icon(Icons.exit_to_app),

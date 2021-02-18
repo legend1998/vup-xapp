@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:vup/LoginScreen.dart';
 import 'package:vup/main.dart';
 import 'package:vup/model/cacheHive.dart';
+import 'package:vup/utils/permissionService.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen({Key key}) : super(key: key);
@@ -28,21 +29,29 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  void checkPermision() async {
+    if (await PermissionService.getPermission(context)) {
+      checkLoggedin();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 1), checkLoggedin);
+    Future.delayed(Duration(milliseconds: 1500), checkPermision);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text(
-          "vup",
-          style: TextStyle(fontSize: 40, color: Colors.blue),
+        body: Container(
+      decoration: BoxDecoration(color: Colors.blue),
+      child: Center(
+        child: Image.asset(
+          "images/logowhitelarge.png",
+          width: 250,
         ),
       ),
-    );
+    ));
   }
 }

@@ -31,14 +31,23 @@ class _WishlistState extends State<Wishlist> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               var data = snapshot.data.wishlist;
-              return Container(
-                height: MediaQuery.of(context).size.height - 100,
-                child: ListView.builder(
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      return productBasketTile(data[index], context);
-                    }),
-              );
+              if (data.isNotEmpty) {
+                return Container(
+                  height: MediaQuery.of(context).size.height - 100,
+                  child: ListView.builder(
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        return productBasketTile(data[index], context);
+                      }),
+                );
+              } else
+                return Container(
+                  height: MediaQuery.of(context).size.height - 100,
+                  child: Center(
+                    child: Text("oops empty wishlist"),
+                  ),
+                );
+              break;
             default:
               return Text("something went wrong");
           }
