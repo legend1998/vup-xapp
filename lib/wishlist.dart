@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:vup/model/ProductLite.dart';
 import 'package:vup/model/Services.dart';
+import 'package:vup/model/User.dart';
 import 'package:vup/utils/productTile.dart';
 
 class Wishlist extends StatefulWidget {
@@ -10,49 +12,66 @@ class Wishlist extends StatefulWidget {
 }
 
 class _WishlistState extends State<Wishlist> {
-  Future _user;
+  List _wishlist;
+  bool _loading = false;
 
   @override
   void initState() {
     super.initState();
-    _user = Services.getUser();
+    loaddata();
+  }
+
+  void loaddata() async {
+    User temp = await Services.getUser();
+    this.setState(() {
+      _wishlist = temp.wishlist;
+      _loading = true;
+    });
+  }
+
+  void deleteItem(String id) {
+    for (ProductLite product in _wishlist) {
+      if (product.id == id) {
+        this.setState(() {
+          _wishlist.remove(product);
+        });
+        break;
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("my wishlist"),
-      ),
-      body: SingleChildScrollView(
-          child: FutureBuilder(
-        future: _user,
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              var data = snapshot.data.wishlist;
-              if (data.isNotEmpty) {
-                return Container(
-                  height: MediaQuery.of(context).size.height - 100,
-                  child: ListView.builder(
-                      itemCount: data.length,
-                      itemBuilder: (context, index) {
-                        return productBasketTile(data[index], context);
-                      }),
-                );
-              } else
-                return Container(
-                  height: MediaQuery.of(context).size.height - 100,
-                  child: Center(
-                    child: Text("oops empty wishlist"),
-                  ),
-                );
-              break;
-            default:
-              return Text("something went wrong");
-          }
-        },
-      )),
-    );
+        appBar: AppBar(
+          title: Text("my wishlist"),
+        ),
+        body: SingleChildScrollView(
+            child: _loading
+                ? _wishlist.length != 0
+                    ? Container(
+                        height: MediaQuery.of(context).size.height,
+                        child: ListView.builder(
+                          itemCount: _wishlist.length,
+                          itemBuilder: (context, index) {
+                            return WishlistItem(
+                              callbackdeleteItem: deleteItem,
+                              p: _wishlist[index],
+                            );
+                          },
+                        ),
+                      )
+                    : Container(
+                        height: MediaQuery.of(context).size.height,
+                        child: Center(
+                          child: Text("oops empty wishlist"),
+                        ),
+                      )
+                : Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )));
   }
 }

@@ -73,12 +73,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Future _bannerTopUrls;
+  Future _bannerMidUrls;
+  Future _bannerBotUrls;
+
   Future user;
 
   @override
   void initState() {
     super.initState();
     _bannerTopUrls = Services.getTopBannerUrls();
+    // _bannerMidUrls = Services.getTopBannerUrls();
+    // _bannerBotUrls = Services.getTopBannerUrls();
     user = Services.getUser();
   }
 
@@ -286,6 +291,38 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             newArrivals(),
+            FutureBuilder(
+                future: _bannerTopUrls,
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.done:
+                      return CarouselSlider.builder(
+                        options: CarouselOptions(
+                            autoPlay: true,
+                            aspectRatio: 16 / 9,
+                            enlargeCenterPage: true),
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          var image = snapshot.data[index];
+                          return Image.network(image);
+                        },
+                      );
+                    case ConnectionState.waiting:
+                      return Container(
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.white24,
+                          child: Container(
+                            height: 150,
+                            color: Colors.white54,
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                      );
+                    default:
+                      return Text("default");
+                  }
+                }),
             Container(
               margin: EdgeInsets.only(left: 10),
               child: Text(
@@ -297,6 +334,38 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             featured(),
+            FutureBuilder(
+                future: _bannerTopUrls,
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.done:
+                      return CarouselSlider.builder(
+                        options: CarouselOptions(
+                            autoPlay: true,
+                            aspectRatio: 16 / 9,
+                            enlargeCenterPage: true),
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          var image = snapshot.data[index];
+                          return Image.network(image);
+                        },
+                      );
+                    case ConnectionState.waiting:
+                      return Container(
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey[300],
+                          highlightColor: Colors.white24,
+                          child: Container(
+                            height: 150,
+                            color: Colors.white54,
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                      );
+                    default:
+                      return Text("default");
+                  }
+                }),
             Container(
               margin: EdgeInsets.only(left: 10),
               child: Text(
@@ -434,9 +503,14 @@ class Search extends SearchDelegate {
     );
   }
 
+  List<String> recentList = [];
+
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
+    if (!recentList.contains(query) && query != "" && query != " ") {
+      recentList.add(query);
+    }
     return Container(
         child: FutureBuilder(
       future: Services.searchResult(query),
@@ -462,8 +536,6 @@ class Search extends SearchDelegate {
       },
     ));
   }
-
-  List<String> recentList = [];
 
   @override
   Widget buildSuggestions(BuildContext context) {

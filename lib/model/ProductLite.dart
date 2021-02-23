@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
+import 'package:vup/model/Product.dart';
 
 part 'ProductLite.g.dart';
 
@@ -13,6 +14,22 @@ List<ProductLite> productLiteFromJson(String str) => List<ProductLite>.from(
 
 String productLiteToJson(List<ProductLite> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+ProductLite compressProduct(Products p) {
+  return new ProductLite(
+      title: p.title,
+      createdAt: p.createdAt,
+      featured: p.featured,
+      id: p.id,
+      offerPrice: p.offerPrice,
+      sellPrice: p.sellPrice,
+      description: p.description,
+      color: p.color,
+      rating: p.rating,
+      thumbnailUrl: p.thumbnailUrl,
+      category: p.category,
+      group: p.group);
+}
 
 @HiveType(typeId: 2)
 class ProductLite {
@@ -26,6 +43,7 @@ class ProductLite {
     this.sellPrice,
     this.description,
     this.color,
+    this.rating,
     this.thumbnailUrl,
     this.group,
   });
@@ -51,6 +69,10 @@ class ProductLite {
   String thumbnailUrl;
   @HiveField(10)
   String group;
+  @HiveField(11)
+  String rating;
+  @HiveField(12)
+  int quantity = 1;
 
   factory ProductLite.fromJson(Map<String, dynamic> json) => ProductLite(
         category: List<String>.from(json["category"].map((x) => x)),
@@ -64,6 +86,7 @@ class ProductLite {
         color: json["color"],
         thumbnailUrl: json["thumbnailURL"],
         group: json["group"],
+        rating: json["rating"],
       );
 
   Map<String, dynamic> toJson() => {

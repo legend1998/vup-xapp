@@ -19,7 +19,12 @@ class _SignupScreenState extends State<SignupScreen> {
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
 
+  bool animationStatus = false;
+
   void validateandMovetomain() async {
+    this.setState(() {
+      animationStatus = true;
+    });
     final FormState form = _formKey.currentState;
     if (form.validate()) {
       print("form is valid");
@@ -30,7 +35,6 @@ class _SignupScreenState extends State<SignupScreen> {
           _phoneController.text,
           _passwordController.text);
       if (response) {
-        print("success sign up");
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -44,6 +48,10 @@ class _SignupScreenState extends State<SignupScreen> {
     } else {
       print("form is not valid");
     }
+
+    this.setState(() {
+      animationStatus = true;
+    });
   }
 
   @override
@@ -155,10 +163,15 @@ class _SignupScreenState extends State<SignupScreen> {
                 width: 150,
                 height: 60,
                 child: FlatButton(
-                  child: Text(
-                    "Sign up",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
+                  child: !animationStatus
+                      ? Text(
+                          "Sign up",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        )
+                      : CircularProgressIndicator(
+                          valueColor:
+                              new AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
                   onPressed: () {
                     //do something
                     validateandMovetomain();

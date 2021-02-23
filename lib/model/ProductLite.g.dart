@@ -26,15 +26,16 @@ class ProductLiteAdapter extends TypeAdapter<ProductLite> {
       sellPrice: fields[6] as int,
       description: fields[7] as String,
       color: fields[8] as String,
+      rating: fields[11] as String,
       thumbnailUrl: fields[9] as String,
       group: fields[10] as String,
-    );
+    )..quantity = fields[12] as int;
   }
 
   @override
   void write(BinaryWriter writer, ProductLite obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.category)
       ..writeByte(1)
@@ -56,7 +57,11 @@ class ProductLiteAdapter extends TypeAdapter<ProductLite> {
       ..writeByte(9)
       ..write(obj.thumbnailUrl)
       ..writeByte(10)
-      ..write(obj.group);
+      ..write(obj.group)
+      ..writeByte(11)
+      ..write(obj.rating)
+      ..writeByte(12)
+      ..write(obj.quantity);
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vup/model/ProductLite.dart';
 import 'package:vup/model/Services.dart';
 import 'package:vup/utils/productTile.dart';
 
@@ -10,12 +11,48 @@ class Basket extends StatefulWidget {
 }
 
 class _BasketState extends State<Basket> {
-  Future _user;
+  List _basket;
+  bool _loading = false;
+  int _basketValue = 0;
 
   @override
   void initState() {
     super.initState();
-    _user = Services.getUser();
+    loadBasket();
+  }
+
+  void loadBasket() async {
+    int sum = 0;
+    var temp = await Services.getUser();
+    for (ProductLite product in temp.cart) {
+      sum += product.offerPrice * product.quantity;
+    }
+    this.setState(() {
+      _basket = temp.cart;
+      _basketValue = sum;
+      _loading = true;
+    });
+  }
+
+  void totalbasket() {
+    int sum = 0;
+    for (ProductLite product in _basket) {
+      sum += product.offerPrice * product.quantity;
+    }
+    this.setState(() {
+      _basketValue = sum;
+    });
+  }
+
+  void deleteItem(String id) {
+    for (ProductLite item in _basket) {
+      if (item.id == id) {
+        this.setState(() {
+          _basket.remove(item);
+        });
+        break;
+      }
+    }
   }
 
   @override
@@ -25,71 +62,78 @@ class _BasketState extends State<Basket> {
           title: Text("vup"),
         ),
         body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: 15, left: 20),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "My basket",
-                  style: TextStyle(fontSize: 22, color: Colors.grey[600]),
-                ),
+            child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.all(10),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "My basket",
+                style: TextStyle(fontSize: 22),
               ),
-              Container(
-                padding: EdgeInsets.only(left: 10, top: 30),
-                height: 400,
-                alignment: Alignment.center,
-                child: FutureBuilder(
-                  future: _user,
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.done:
-                        {
-                          var data = snapshot.data.cart;
-                          if (data.isNotEmpty) {
-                            return ListView.builder(
-                              itemCount: data.length,
-                              itemBuilder: (context, index) {
-                                return productBasketTile(data[index], context);
-                              },
+            ),
+            _loading
+                ? _basket.length == 0
+                    ? Container(
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: Center(
+                          child: Text("basket is empty"),
+                        ),
+                      )
+                    : Container(
+                        height: MediaQuery.of(context).size.height * 0.65,
+                        child: ListView.builder(
+                          itemCount: _basket.length,
+                          itemBuilder: (context, index) {
+                            return BasketTile(
+                              p: _basket[index],
+                              callbackBasketvalue: totalbasket,
+                              callbackDeleteitem: deleteItem,
                             );
-                          } else
-                            return Container(
-                              child: Center(
-                                child: Text("basket is empty"),
-                              ),
-                            );
-                        }
-                        break;
-                      default:
-                        return Text("something went wrong");
-                    }
-                  },
-                ),
-              ),
-              Divider(
-                color: Colors.grey,
-              ),
-              Container(
-                  margin: EdgeInsets.only(top: 20, right: 20),
-                  width: 150,
-                  height: 60,
-                  child: FlatButton(
-                    child: Text(
-                      "Place Order",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () {
-                      // go somewhere
-                    },
+                          },
+                        ),
+                      )
+                : Container(
+                    child: Text("basket is empty"),
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: Colors.blue,
-                  )),
-            ],
-          ),
-        ));
+            _loading
+                ? Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 20),
+                          child: Text(
+                            ' Rs. $_basketValue',
+                            style: TextStyle(
+                                fontSize: 22, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(right: 20),
+                          height: 60,
+                          width: 150,
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(50)),
+                          child: FlatButton(
+                            onPressed: () {
+                              //do something
+                            },
+                            child: Text(
+                              "Place Order",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                : Container(
+                    child: Text("toal value cart and price"),
+                  ),
+          ],
+        )));
   }
 }

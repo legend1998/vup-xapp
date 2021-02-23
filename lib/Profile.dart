@@ -47,8 +47,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: <Widget>[
                 CircleAvatar(
                   radius: 70,
-                  backgroundImage: NetworkImage(
-                      'https://ui-avatars.com/api/?name=${person.fname}+${person.lname}&size=256&rounded=true'),
+                  backgroundImage: loading
+                      ? NetworkImage(
+                          'https://ui-avatars.com/api/?name=${person.fname}+${person.lname}&size=256&rounded=true')
+                      : NetworkImage(
+                          "https://ui-avatars.com/api/?name=john+doe&size=256&rounded=true"),
                   backgroundColor: Colors.blue,
                 ),
                 Positioned(

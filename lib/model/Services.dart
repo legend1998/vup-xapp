@@ -30,10 +30,10 @@ class Services {
         print("added in box");
         return true;
       }
-      return null;
+      return false;
     } catch (e) {
       print(e);
-      return null;
+      return false;
     }
   }
 
@@ -45,19 +45,21 @@ class Services {
       User person = box.getAt(0);
       return person;
     } else
-      return null;
+      return false;
   }
 
   static Future<String> addToBasket(Products p) async {
+    ProductLite newproduct = compressProduct(p);
     HiveService hiveService = new HiveService();
     bool exist = await hiveService.isExists(boxName: "user");
     if (exist) {
       var box = await Hive.openBox("user");
-      User person = box.getAt(0);
-      if (person.cart.contains(p)) {
+      User person = await box.getAt(0);
+      if (checkexistornot(person.cart, newproduct)) {
         return "already in basket";
       } else {
-        person.cart.add(p);
+        person.cart.add(newproduct);
+        box.putAt(0, person);
         return "added in basket";
       }
     } else {
@@ -65,16 +67,27 @@ class Services {
     }
   }
 
+  static bool checkexistornot(List<dynamic> plist, ProductLite p) {
+    for (ProductLite e in plist) {
+      if (e.id == p.id) return true;
+    }
+    return false;
+  }
+
   static Future<String> addToWishlist(Products p) async {
+    ProductLite newproduct = compressProduct(p);
+
     HiveService hiveService = new HiveService();
     bool exist = await hiveService.isExists(boxName: "user");
     if (exist) {
       var box = await Hive.openBox("user");
-      User person = box.getAt(0);
-      if (person.wishlist.contains(p)) {
+      User person = await box.getAt(0);
+      if (checkexistornot(person.wishlist, newproduct)) {
         return "already in wishlist";
       } else {
-        person.wishlist.add(p);
+        person.wishlist.add(newproduct);
+        box.putAt(0, person);
+
         return "added in wishlist";
       }
     } else {
@@ -319,5 +332,14 @@ class Services {
       print(e);
       return false;
     }
+  }
+
+  static int getbasketPrice(List<dynamic> plist) {
+    int sum = 0;
+    plist.map((product) {
+      sum += product.offerPrice * product.quantity;
+    });
+
+    return sum;
   }
 }

@@ -31,14 +31,14 @@ class _OrdersState extends State<Orders> {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              var data = snapshot.data.wishlist;
+              var data = snapshot.data.orders;
               if (data.isNotEmpty) {
                 return Container(
                   height: MediaQuery.of(context).size.height - 100,
                   child: ListView.builder(
                       itemCount: data.length,
                       itemBuilder: (context, index) {
-                        return productBasketTile(data[index], context);
+                        return productSearchTile(data[index], context);
                       }),
                 );
               } else

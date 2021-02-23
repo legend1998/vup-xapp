@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vup/ForgotPassword.dart';
 import 'package:vup/SignupScreen.dart';
 import 'package:vup/main.dart';
@@ -12,13 +13,8 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
-    with TickerProviderStateMixin {
-
-  
-  AnimationController({
-    
-  });
+class _LoginScreenState extends State<LoginScreen> {
+  var animationstatus = 0;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -37,10 +33,16 @@ class _LoginScreenState extends State<LoginScreen>
                 builder: (context) => MyHomePage(
                       title: "vup",
                     )));
+      } else {
+        Fluttertoast.showToast(
+            msg: "either phone or email or password is incorrect");
       }
     } else {
       print("form is not valid");
     }
+    this.setState(() {
+      animationstatus = 0;
+    });
   }
 
   @override
@@ -121,11 +123,19 @@ class _LoginScreenState extends State<LoginScreen>
                   width: 150,
                   height: 60,
                   child: FlatButton(
-                    child: Text(
-                      "Sign in",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: animationstatus == 0
+                        ? Text(
+                            "Sign in",
+                            style: TextStyle(color: Colors.white),
+                          )
+                        : CircularProgressIndicator(
+                            valueColor:
+                                new AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
                     onPressed: () {
+                      this.setState(() {
+                        animationstatus = 1;
+                      });
                       validateandMovetomain();
                     },
                   ),
@@ -174,6 +184,4 @@ class _LoginScreenState extends State<LoginScreen>
           ),
         ));
   }
-
-  TextStyle newMethod() => new TextStyle(color: Colors.white);
 }
