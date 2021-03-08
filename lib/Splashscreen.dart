@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
           context,
           MaterialPageRoute(
               builder: (context) => MyHomePage(
-                    title: "vup",
+                    title: "Qbazar",
                   )));
     } else {
       Navigator.pushReplacement(
@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
       decoration: BoxDecoration(color: Colors.blue),
       child: Center(
         child: Image.asset(
-          "images/logowhitelarge.png",
+          "images/mainlogowhite.png",
           width: 250,
         ),
       ),

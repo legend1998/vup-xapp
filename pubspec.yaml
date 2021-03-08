@@ -44,6 +44,7 @@ dependencies:
   uuid: ^2.2.2
   permission_handler: ^5.1.0+2
   flutter_number_picker: ^0.0.8
+  razorpay_flutter: 1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -65,10 +66,11 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
-    - images/logobluesmall.png
-    - images/logo.png
-    - images/logowhitelarge.png
+    - images/mainlogoblue.png
+    - images/logoblue.png
+    - images/mainlogowhite.png
     - images/empty_basket.png
+    - images/logowhite.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
