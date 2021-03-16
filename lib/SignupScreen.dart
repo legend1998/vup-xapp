@@ -36,11 +36,7 @@ class _SignupScreenState extends State<SignupScreen> {
           _passwordController.text);
       if (response) {
         Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => MyHomePage(
-                      title: "vup",
-                    )));
+            context, MaterialPageRoute(builder: (context) => MyHomePage()));
       } else {
         Fluttertoast.showToast(
             msg: "A account is already exist with the given phone or email");
@@ -50,7 +46,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
 
     this.setState(() {
-      animationStatus = true;
+      animationStatus = false;
     });
   }
 
@@ -162,7 +158,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 margin: EdgeInsets.only(top: 20, right: 15, left: 15),
                 width: 150,
                 height: 60,
-                child: FlatButton(
+                child: RaisedButton(
                   child: !animationStatus
                       ? Text(
                           "Sign up",
@@ -172,6 +168,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           valueColor:
                               new AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
+                  color: Colors.blue,
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
                   onPressed: () {
                     //do something
                     validateandMovetomain();

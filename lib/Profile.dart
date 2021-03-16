@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vup/AddressCheck.dart';
 import 'package:vup/model/Services.dart';
 import 'package:vup/model/User.dart';
 
@@ -96,10 +97,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ListTile(
                     title: Text("Address "),
                     subtitle: loading
-                        ? Text('${person.address.toString()}')
+                        ? Text('Check Address')
                         : Text("113 street highway , New York , USA "),
                     leading: Icon(Icons.place),
                     isThreeLine: true,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddressCheck()));
+                    },
                     trailing: Icon(Icons.edit)),
               ],
             ),

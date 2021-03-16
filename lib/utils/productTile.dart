@@ -19,7 +19,10 @@ Widget productTile(ProductLite p, BuildContext context) => Card(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.network(p.thumbnailUrl),
+            Image.network(
+              p.thumbnailUrl,
+              width: 100,
+            ),
             Center(
               child: Text(
                 p.title,

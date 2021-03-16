@@ -25,17 +25,14 @@ class _LoginScreenState extends State<LoginScreen> {
       print("form is valid");
 
       var response = await Services.loginUser(
-          _usernameController.text, _passwordController.text);
+          _usernameController.text.trim(), _passwordController.text.trim());
       if (response) {
         Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => MyHomePage(
-                      title: "vup",
-                    )));
+            context, MaterialPageRoute(builder: (context) => MyHomePage()));
       } else {
         Fluttertoast.showToast(
-            msg: "either phone or email or password is incorrect");
+            msg:
+                "either phone or email or password is incorrect or check internet");
       }
     } else {
       print("form is not valid");
@@ -72,6 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextFormField(
                             controller: _usernameController,
                             validator: (value) {
+                              value = value.trim();
                               if (value.isNotEmpty) {
                                 if (!value.endsWith("@gmail.com")) {
                                   if (value.length < 10) {
@@ -122,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   margin: EdgeInsets.only(top: 20, right: 15, left: 15),
                   width: 150,
                   height: 60,
-                  child: FlatButton(
+                  child: RaisedButton(
                     child: animationstatus == 0
                         ? Text(
                             "Sign in",
@@ -132,6 +130,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             valueColor:
                                 new AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
+                    color: Colors.blue,
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
                     onPressed: () {
                       this.setState(() {
                         animationstatus = 1;

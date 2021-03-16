@@ -7,7 +7,6 @@ import 'Category.dart';
 import "package:http/http.dart" as http;
 import 'User.dart';
 import 'cacheHive.dart';
-import 'package:uuid/uuid.dart';
 
 class Services {
   static const url = "http://vup-api.herokuapp.com";
@@ -33,6 +32,7 @@ class Services {
       return false;
     } catch (e) {
       print(e);
+
       return false;
     }
   }
@@ -226,8 +226,27 @@ class Services {
     }
   }
 
+  static Future getproductbyCategory(String category) async {
+    try {
+      final response = await http.get(
+        '$url/product/searchByCategory/$category',
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'authorization': 'dklfhaewowi32047230jlks',
+        },
+      );
+      if (200 == response.statusCode) {
+        final List<ProductLite> result = productLiteFromJson(response.body);
+        return result;
+      }
+      return List<ProductLite>();
+    } catch (e) {
+      print(e);
+      return List<ProductLite>();
+    }
+  }
+
   static Future getProduct(String id) async {
-    print(id);
     try {
       final response = await http
           .get('$url/product/getproduct/$id', headers: <String, String>{
@@ -257,7 +276,6 @@ class Services {
           }));
       if (200 == response.statusCode) {
         final List<ProductLite> result = productLiteFromJson(response.body);
-        print(response.statusCode);
         return result;
       }
       return List();
@@ -298,7 +316,6 @@ class Services {
 
   static Future signupUser(
       String username, String email, String phone, String password) async {
-    var uuid = Uuid();
     var user = username.split(" ");
     print(user);
     try {
@@ -309,7 +326,6 @@ class Services {
           'authorization': 'dklfhaewowi32047230jlks'
         },
         body: jsonEncode(<String, String>{
-          "uid": uuid.v4(),
           "fname": user[0],
           "lname": user.length == 2 ? user[1] : "",
           "email": email,
@@ -341,5 +357,41 @@ class Services {
     });
 
     return sum;
+  }
+
+  static Future<bool> addAddress(
+      {String uid,
+      String street,
+      String landmark,
+      String dist,
+      String state,
+      String pin}) async {
+    try {
+      final response = await http.post(
+        '$url/user/address',
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'authorization': 'dklfhaewowi32047230jlks'
+        },
+        body: jsonEncode(<String, String>{
+          "uid": uid,
+          "street": street,
+          "landmark": landmark,
+          "district": dist,
+          "state": state,
+          "pin_code": pin
+        }),
+      );
+      if (200 == response.statusCode) {
+        final User user = userFromJson(response.body);
+        var person = await Hive.openBox("user");
+        person.add(user);
+        print("added in box");
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 }

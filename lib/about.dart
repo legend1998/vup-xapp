@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class About extends StatelessWidget {
   const About({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text("center"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("About"),
+      ),
+      body: Center(
+        child: Text("Not open source it's personal"),
       ),
     );
   }

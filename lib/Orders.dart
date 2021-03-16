@@ -63,9 +63,7 @@ class _OrdersState extends State<Orders> {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => MyHomePage(
-                                              title: "vup",
-                                            )));
+                                        builder: (context) => MyHomePage()));
                               },
                             ),
                             decoration: BoxDecoration(

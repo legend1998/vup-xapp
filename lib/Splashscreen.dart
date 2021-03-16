@@ -18,11 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
     bool exist = await hiveService.isExists(boxName: "user");
     if (exist) {
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MyHomePage(
-                    title: "Qbazar",
-                  )));
+          context, MaterialPageRoute(builder: (context) => MyHomePage()));
     } else {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LoginScreen()));

@@ -237,6 +237,38 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                     Divider(),
                     Container(
+                      height: 100,
+                      padding: EdgeInsets.only(left: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Size Available",
+                          ),
+                          Row(
+                            children: [],
+                          )
+                        ],
+                      ),
+                    ),
+                    Divider(),
+                    Container(
+                      height: 100,
+                      padding: EdgeInsets.only(left: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Color Available",
+                          ),
+                          Row(
+                            children: [],
+                          )
+                        ],
+                      ),
+                    ),
+                    Divider(),
+                    Container(
                       padding: EdgeInsets.only(left: 20),
                       child: Text(
                         "DETAILS",

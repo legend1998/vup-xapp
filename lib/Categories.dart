@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:vup/CategorySearch.dart';
 import 'package:vup/model/Category.dart';
 import 'package:vup/model/Services.dart';
 
@@ -57,18 +58,28 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           Category cat = data[index];
                           return Card(
                             child: Container(
-                              decoration: BoxDecoration(
-                                  color: colors[index % colors.length]),
-                              child: Center(
-                                child: Text(
-                                  cat.category,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
+                                decoration: BoxDecoration(
+                                    color: colors[index % colors.length]),
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                CategorySearch(
+                                                  category: cat.category,
+                                                )));
+                                  },
+                                  child: Center(
+                                    child: Text(
+                                      cat.category,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                )),
                           );
                         },
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

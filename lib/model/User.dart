@@ -5,8 +5,12 @@
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
+import 'package:vup/model/Coupans.dart';
 
 part 'User.g.dart';
+// To parse this JSON data, do
+//
+//     final user = userFromJson(jsonString);
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
 
@@ -22,9 +26,11 @@ class User {
     this.wishlist,
     this.orders,
     this.id,
-    this.uid,
+    this.refBy,
+    this.coupans,
     this.fname,
     this.lname,
+    this.refCode,
     this.email,
     this.password,
     this.phone,
@@ -32,7 +38,6 @@ class User {
     this.updatedAt,
     this.v,
   });
-
   @HiveField(0)
   DateTime dateJoined;
   @HiveField(1)
@@ -48,22 +53,26 @@ class User {
   @HiveField(6)
   String id;
   @HiveField(7)
-  String uid;
+  String refBy;
   @HiveField(8)
-  String fname;
+  List<Coupan> coupans;
   @HiveField(9)
-  String lname;
+  String fname;
   @HiveField(10)
-  String email;
+  String lname;
   @HiveField(11)
-  String password;
+  String refCode;
   @HiveField(12)
-  String phone;
+  String email;
   @HiveField(13)
-  DateTime createdAt;
+  String password;
   @HiveField(14)
-  DateTime updatedAt;
+  String phone;
   @HiveField(15)
+  DateTime createdAt;
+  @HiveField(16)
+  DateTime updatedAt;
+  @HiveField(17)
   int v;
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -74,9 +83,12 @@ class User {
         wishlist: List<dynamic>.from(json["wishlist"].map((x) => x)),
         orders: List<dynamic>.from(json["orders"].map((x) => x)),
         id: json["_id"],
-        uid: json["uid"],
+        refBy: json["refBy"],
+        coupans:
+            List<Coupan>.from(json["coupans"].map((x) => Coupan.fromJson(x))),
         fname: json["fname"],
         lname: json["lname"],
+        refCode: json["refCode"],
         email: json["email"],
         password: json["password"],
         phone: json["phone"],
@@ -93,9 +105,11 @@ class User {
         "wishlist": List<dynamic>.from(wishlist.map((x) => x)),
         "orders": List<dynamic>.from(orders.map((x) => x)),
         "_id": id,
-        "uid": uid,
+        "refBy": refBy,
+        "coupans": List<dynamic>.from(coupans.map((x) => x.toJson())),
         "fname": fname,
         "lname": lname,
+        "refCode": refCode,
         "email": email,
         "password": password,
         "phone": phone,

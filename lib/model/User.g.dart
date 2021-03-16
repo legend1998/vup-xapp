@@ -24,22 +24,24 @@ class UserAdapter extends TypeAdapter<User> {
       wishlist: (fields[4] as List)?.cast<dynamic>(),
       orders: (fields[5] as List)?.cast<dynamic>(),
       id: fields[6] as String,
-      uid: fields[7] as String,
-      fname: fields[8] as String,
-      lname: fields[9] as String,
-      email: fields[10] as String,
-      password: fields[11] as String,
-      phone: fields[12] as String,
-      createdAt: fields[13] as DateTime,
-      updatedAt: fields[14] as DateTime,
-      v: fields[15] as int,
+      refBy: fields[7] as String,
+      coupans: (fields[8] as List)?.cast<Coupan>(),
+      fname: fields[9] as String,
+      lname: fields[10] as String,
+      refCode: fields[11] as String,
+      email: fields[12] as String,
+      password: fields[13] as String,
+      phone: fields[14] as String,
+      createdAt: fields[15] as DateTime,
+      updatedAt: fields[16] as DateTime,
+      v: fields[17] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(16)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.dateJoined)
       ..writeByte(1)
@@ -55,22 +57,26 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(6)
       ..write(obj.id)
       ..writeByte(7)
-      ..write(obj.uid)
+      ..write(obj.refBy)
       ..writeByte(8)
-      ..write(obj.fname)
+      ..write(obj.coupans)
       ..writeByte(9)
-      ..write(obj.lname)
+      ..write(obj.fname)
       ..writeByte(10)
-      ..write(obj.email)
+      ..write(obj.lname)
       ..writeByte(11)
-      ..write(obj.password)
+      ..write(obj.refCode)
       ..writeByte(12)
-      ..write(obj.phone)
+      ..write(obj.email)
       ..writeByte(13)
-      ..write(obj.createdAt)
+      ..write(obj.password)
       ..writeByte(14)
-      ..write(obj.updatedAt)
+      ..write(obj.phone)
       ..writeByte(15)
+      ..write(obj.createdAt)
+      ..writeByte(16)
+      ..write(obj.updatedAt)
+      ..writeByte(17)
       ..write(obj.v);
   }
 
