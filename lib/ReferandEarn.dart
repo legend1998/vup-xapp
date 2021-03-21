@@ -35,7 +35,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
       appBar: AppBar(
         title: Text("Refer and Earn"),
         actions: [
-          FlatButton(
+          TextButton(
             child: Text(
               "coupan",
               style: TextStyle(color: Colors.white),
@@ -114,11 +114,14 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
               margin: EdgeInsets.only(top: 20, bottom: 20, left: 10, right: 10),
               child: ConstrainedBox(
                 constraints: BoxConstraints.tightFor(
-                    width: MediaQuery.of(context).size.width * 0.9, height: 60),
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  color: Colors.blue,
+                    width: MediaQuery.maybeOf(context).size.width * 0.9,
+                    height: 60),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(30.0),
+                    ),
+                  ),
                   child: Text(
                     "Share",
                     style: TextStyle(color: Colors.white),

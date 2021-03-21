@@ -22,7 +22,7 @@ class HiveService {
   }
 
   getBoxes<T>(String boxName) async {
-    List<T> boxList = List<T>();
+    List<T> boxList = [];
 
     final openBox = await Hive.openBox(boxName);
 

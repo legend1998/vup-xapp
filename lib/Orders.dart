@@ -34,7 +34,7 @@ class _OrdersState extends State<Orders> {
               var data = snapshot.data.orders;
               if (data.isNotEmpty) {
                 return Container(
-                  height: MediaQuery.of(context).size.height - 100,
+                  height: MediaQuery.maybeOf(context).size.height - 100,
                   child: ListView.builder(
                       itemCount: data.length,
                       itemBuilder: (context, index) {
@@ -43,7 +43,7 @@ class _OrdersState extends State<Orders> {
                 );
               } else
                 return Container(
-                    height: MediaQuery.of(context).size.height - 100,
+                    height: MediaQuery.maybeOf(context).size.height - 100,
                     alignment: Alignment.center,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -54,7 +54,7 @@ class _OrdersState extends State<Orders> {
                             margin:
                                 EdgeInsets.only(top: 20, right: 15, left: 15),
                             height: 60,
-                            child: FlatButton(
+                            child: TextButton(
                               child: Text(
                                 "Let's buy something",
                                 style: TextStyle(color: Colors.white),

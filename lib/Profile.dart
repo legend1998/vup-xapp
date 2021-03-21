@@ -11,12 +11,19 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  int defaultAddress = 0;
   User person;
   bool loading = false;
   @override
   void initState() {
     super.initState();
     loaddata();
+  }
+
+  void handleRadioSelect(int value) {
+    setState(() {
+      defaultAddress = value;
+    });
   }
 
   loaddata() async {
@@ -97,7 +104,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ListTile(
                     title: Text("Address "),
                     subtitle: loading
-                        ? Text('Check Address')
+                        ? Text(person?.address?.length != 0
+                            ? '${person.address[defaultAddress]["street"]}'
+                            : 'select address')
                         : Text("113 street highway , New York , USA "),
                     leading: Icon(Icons.place),
                     isThreeLine: true,
@@ -105,7 +114,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AddressCheck()));
+                              builder: (context) => AddressCheck(
+                                  addressfunc: handleRadioSelect)));
                     },
                     trailing: Icon(Icons.edit)),
               ],

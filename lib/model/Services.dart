@@ -117,10 +117,10 @@ class Services {
           hiveService.addBoxes(products, "productslite");
           return products;
         }
-        return List<Products>();
+        return <Products>[];
       } catch (e) {
         print(e);
-        return List<Products>();
+        return <Products>[];
       }
     }
   }
@@ -129,7 +129,7 @@ class Services {
     Reference reference = FirebaseStorage.instance.ref("/banner/top");
     HiveService hiveService = new HiveService();
 
-    List topbannerurls = new List();
+    List topbannerurls = [];
 
     bool exist = await hiveService.isExists(boxName: "topbanner");
     if (exist) {
@@ -155,7 +155,7 @@ class Services {
   static Future<List<String>> getMidBannerUrls() async {
     Reference reference = FirebaseStorage.instance.ref("/banner/top");
 
-    List<String> topbannerurls = new List();
+    List<String> topbannerurls = [];
     try {
       reference.listAll().then((refs) {
         refs.items.forEach((ref) {
@@ -175,7 +175,7 @@ class Services {
   static Future getBotBannerUrls() async {
     Reference reference = FirebaseStorage.instance.ref("/banner/top");
 
-    List<String> botbannerurls = new List();
+    List<String> botbannerurls = [];
     try {
       reference.listAll().then((refs) {
         refs.items.forEach((ref) {
@@ -218,10 +218,10 @@ class Services {
 
           return categories;
         }
-        return List();
+        return [];
       } catch (e) {
         print(e);
-        return List();
+        return [];
       }
     }
   }
@@ -239,10 +239,10 @@ class Services {
         final List<ProductLite> result = productLiteFromJson(response.body);
         return result;
       }
-      return List<ProductLite>();
+      return <ProductLite>[];
     } catch (e) {
       print(e);
-      return List<ProductLite>();
+      return <ProductLite>[];
     }
   }
 
@@ -278,10 +278,10 @@ class Services {
         final List<ProductLite> result = productLiteFromJson(response.body);
         return result;
       }
-      return List();
+      return [];
     } catch (e) {
       print(e);
-      return List();
+      return [];
     }
   }
 
@@ -384,9 +384,10 @@ class Services {
       );
       if (200 == response.statusCode) {
         final User user = userFromJson(response.body);
-        var person = await Hive.openBox("user");
-        person.add(user);
-        print("added in box");
+        var box = await Hive.openBox("user");
+        User person = await box.getAt(0);
+        person.address = user.address;
+        box.putAt(0, person);
         return true;
       }
       return false;

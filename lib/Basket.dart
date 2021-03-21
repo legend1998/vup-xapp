@@ -24,7 +24,6 @@ class _BasketState extends State<Basket> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -82,13 +81,13 @@ class _BasketState extends State<Basket> {
             _loading
                 ? _basket.length == 0
                     ? Container(
-                        height: MediaQuery.of(context).size.height * 0.7,
+                        height: MediaQuery.maybeOf(context).size.height * 0.7,
                         child: Center(
                           child: Text("basket is empty"),
                         ),
                       )
                     : Container(
-                        height: MediaQuery.of(context).size.height * 0.65,
+                        height: MediaQuery.maybeOf(context).size.height * 0.65,
                         child: ListView.builder(
                           itemCount: _basket.length,
                           itemBuilder: (context, index) {
@@ -124,9 +123,12 @@ class _BasketState extends State<Basket> {
                           decoration: BoxDecoration(
                               color: Colors.blue,
                               borderRadius: BorderRadius.circular(50)),
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: new RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(30.0),
+                              ),
+                            ),
                             onPressed: () {
                               if (_basket.isEmpty) return;
                               Navigator.push(
@@ -134,7 +136,6 @@ class _BasketState extends State<Basket> {
                                   MaterialPageRoute(
                                       builder: (context) => CheckOut()));
                             },
-                            color: Colors.blue,
                             child: Text(
                               "Place Order",
                               style: TextStyle(color: Colors.white),

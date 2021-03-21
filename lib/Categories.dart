@@ -51,7 +51,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   List data = snapshot.data;
                   if (data != null) {
                     return Container(
-                      height: MediaQuery.of(context).size.height,
+                      height: MediaQuery.maybeOf(context).size.height,
                       child: GridView.builder(
                         itemCount: data.length,
                         itemBuilder: (context, index) {

@@ -158,7 +158,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 margin: EdgeInsets.only(top: 20, right: 15, left: 15),
                 width: 150,
                 height: 60,
-                child: RaisedButton(
+                child: ElevatedButton(
                   child: !animationStatus
                       ? Text(
                           "Sign up",
@@ -168,9 +168,11 @@ class _SignupScreenState extends State<SignupScreen> {
                           valueColor:
                               new AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
-                  color: Colors.blue,
-                  shape: new RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
+                  style: ElevatedButton.styleFrom(
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(30.0),
+                    ),
+                  ),
                   onPressed: () {
                     //do something
                     validateandMovetomain();
@@ -185,7 +187,7 @@ class _SignupScreenState extends State<SignupScreen> {
               alignment: Alignment.centerRight,
               width: 300,
               height: 60,
-              child: FlatButton(
+              child: TextButton(
                 child: Text(
                   "already have an account? sign in.",
                   style: TextStyle(color: Colors.black54, fontSize: 14),

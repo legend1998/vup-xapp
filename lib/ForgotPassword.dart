@@ -48,7 +48,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               margin: EdgeInsets.only(top: 20, right: 15, left: 15),
               width: 150,
               height: 60,
-              child: FlatButton(
+              child: TextButton(
                 child: Text(
                   "Get OTP",
                   style: TextStyle(color: Colors.white),

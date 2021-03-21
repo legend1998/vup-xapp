@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   margin: EdgeInsets.only(top: 20, right: 15, left: 15),
                   width: 150,
                   height: 60,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     child: animationstatus == 0
                         ? Text(
                             "Sign in",
@@ -130,9 +130,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             valueColor:
                                 new AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
-                    color: Colors.blue,
-                    shape: new RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0)),
+                    style: ElevatedButton.styleFrom(
+                      shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0),
+                      ),
+                    ),
                     onPressed: () {
                       this.setState(() {
                         animationstatus = 1;
@@ -149,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 width: 200,
                 height: 60,
-                child: FlatButton(
+                child: TextButton(
                   child: Text(
                     "forgot password?",
                     style: TextStyle(color: Colors.black38, fontSize: 14),
@@ -168,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 width: 200,
                 height: 60,
-                child: FlatButton(
+                child: TextButton(
                   child: Text(
                     "new here? sign up.",
                     style: TextStyle(color: Colors.black54, fontSize: 14),

@@ -5,7 +5,9 @@ import 'package:vup/model/Services.dart';
 import 'package:vup/model/User.dart';
 
 class AddressCheck extends StatefulWidget {
-  AddressCheck({Key key}) : super(key: key);
+  AddressCheck({Key key, this.addressfunc}) : super(key: key);
+
+  final addressfunc;
 
   @override
   _AddressCheckState createState() => _AddressCheckState();
@@ -15,6 +17,7 @@ class _AddressCheckState extends State<AddressCheck> {
   User user;
   bool loading;
   int animationstatus;
+  int radioselect = -1;
 
   final houseandstreetcontroller = TextEditingController();
   final landmarkcontroller = TextEditingController();
@@ -28,6 +31,13 @@ class _AddressCheckState extends State<AddressCheck> {
     animationstatus = 0;
     loading = false;
     loaduser();
+  }
+
+  void handleRadioselect(int value) {
+    setState(() {
+      radioselect = value;
+    });
+    widget.addressfunc(value);
   }
 
   void addaddresstoapi() async {
@@ -64,6 +74,9 @@ class _AddressCheckState extends State<AddressCheck> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Address"),
+        actions: loading
+            ? ([user.address.length == 1 ? Text("Add More") : Text("")])
+            : [],
       ),
       body: loading
           ? SingleChildScrollView(
@@ -184,7 +197,7 @@ class _AddressCheckState extends State<AddressCheck> {
                       margin: EdgeInsets.only(top: 20, right: 15, left: 15),
                       width: 150,
                       height: 60,
-                      child: FlatButton(
+                      child: TextButton(
                         child: animationstatus == 0
                             ? Text(
                                 "Add Address",
@@ -213,13 +226,17 @@ class _AddressCheckState extends State<AddressCheck> {
       );
 
   Widget listAddress() => Container(
-        height: MediaQuery.of(context).size.height,
+        height: MediaQuery.maybeOf(context).size.height,
         child: ListView.builder(
           itemCount: user.address.length,
           itemBuilder: (context, index) {
             var address = user.address[index];
-            return Card(
-              child: Container(
+            return ListTile(
+              leading: Radio(
+                  value: index,
+                  groupValue: radioselect,
+                  onChanged: handleRadioselect),
+              title: Container(
                   decoration: BoxDecoration(),
                   padding: EdgeInsets.only(left: 10, right: 10, top: 10),
                   height: 100,

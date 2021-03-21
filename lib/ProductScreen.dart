@@ -183,7 +183,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             margin: EdgeInsets.only(right: 20),
                             width: 150,
                             height: 60,
-                            child: FlatButton(
+                            child: TextButton(
                               child: Text(
                                 "Add in Basket",
                                 style: TextStyle(color: Colors.white),

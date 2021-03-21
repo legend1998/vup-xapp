@@ -267,7 +267,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ? [
                   Container(
                       decoration: BoxDecoration(color: Color(0xff3F51B5)),
-                      height: MediaQuery.of(context).size.height,
+                      height: MediaQuery.maybeOf(context).size.height,
                       child: Image.asset("images/nointernet.png"))
                 ]
               : <Widget>[
@@ -422,7 +422,6 @@ class Search extends SearchDelegate {
 
   @override
   List<Widget> buildActions(BuildContext context) {
-    // TODO: implement buildActions
     return <Widget>[
       IconButton(
         icon: Icon(Icons.close),
@@ -435,7 +434,6 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildLeading(BuildContext context) {
-    // TODO: implement buildLeading
     return IconButton(
       icon: Icon(Icons.arrow_back),
       onPressed: () {
@@ -448,7 +446,6 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
     if (!recentList.contains(query) && query != "" && query != " ") {
       recentList.add(query);
     }
@@ -480,7 +477,6 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    // TODO: implement buildSuggestions
     List<String> suggestionList = [];
     suggestionList = recentList;
 

@@ -48,7 +48,7 @@ class _OTPconfirmScreenState extends State<OTPconfirmScreen> {
               margin: EdgeInsets.only(top: 20, right: 15, left: 15),
               width: 150,
               height: 60,
-              child: FlatButton(
+              child: TextButton(
                 child: Text(
                   "Confirm",
                   style: TextStyle(color: Colors.white),

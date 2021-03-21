@@ -43,7 +43,7 @@ class _CategorySearchState extends State<CategorySearch> {
             children: [
               loading
                   ? Container(
-                      height: MediaQuery.of(context).size.height * 0.8,
+                      height: MediaQuery.maybeOf(context).size.height * 0.8,
                       child: p.isEmpty
                           ? Center(
                               child: Text("coming soon..."),
@@ -56,7 +56,7 @@ class _CategorySearchState extends State<CategorySearch> {
                             ),
                     )
                   : Container(
-                      height: MediaQuery.of(context).size.height,
+                      height: MediaQuery.maybeOf(context).size.height,
                       child: Center(
                         child: CircularProgressIndicator(),
                       ))

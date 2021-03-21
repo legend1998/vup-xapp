@@ -50,7 +50,7 @@ class _WishlistState extends State<Wishlist> {
             child: _loading
                 ? _wishlist.length != 0
                     ? Container(
-                        height: MediaQuery.of(context).size.height,
+                        height: MediaQuery.maybeOf(context).size.height,
                         child: ListView.builder(
                           itemCount: _wishlist.length,
                           itemBuilder: (context, index) {
@@ -62,13 +62,13 @@ class _WishlistState extends State<Wishlist> {
                         ),
                       )
                     : Container(
-                        height: MediaQuery.of(context).size.height,
+                        height: MediaQuery.maybeOf(context).size.height,
                         child: Center(
                           child: Text("oops empty wishlist"),
                         ),
                       )
                 : Container(
-                    height: MediaQuery.of(context).size.height,
+                    height: MediaQuery.maybeOf(context).size.height,
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),
