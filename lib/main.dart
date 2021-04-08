@@ -94,6 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
         connectionStatus.connectionChange.listen(connectionChanged);
 
     _bannerTopUrls = Services.getTopBannerUrls();
+    _bannerMidUrls = Services.getMidBannerUrls();
     // _bannerMidUrls = Services.getTopBannerUrls();
     user = Services.getUser();
   }
@@ -323,7 +324,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   newArrivals(),
                   FutureBuilder(
-                      future: _bannerTopUrls,
+                      future: _bannerMidUrls,
                       builder: (context, snapshot) {
                         switch (snapshot.connectionState) {
                           case ConnectionState.done:
@@ -351,7 +352,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               alignment: Alignment.center,
                             );
                           default:
-                            return Text("default");
+                            return Container(
+                              height: 100,
+                              child: Center(
+                                child: Text("no banner found add banner"),
+                              ),
+                            );
                         }
                       }),
                   Container(

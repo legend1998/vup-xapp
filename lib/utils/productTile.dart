@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:vup/ProductScreen.dart';
 import 'package:vup/model/Product.dart';
 import 'package:vup/model/ProductLite.dart';
@@ -259,18 +260,19 @@ class BasketTile extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        // CustomNumberPicker(
-                        //   initialValue: p.quantity,
-                        //   maxValue: 9,
-                        //   valueTextStyle:
-                        //       TextStyle(fontSize: 16, color: Colors.blue),
-                        //   minValue: 1,
-                        //   step: 1,
-                        //   onValue: (value) async {
-                        //     p.quantity = value;
-                        //     callbackBasketvalue();
-                        //   },
-                        // ),
+                        NumberPicker(
+                            itemHeight: 30,
+                            itemWidth: 40,
+                            minValue: 1,
+                            maxValue: 5,
+                            axis: Axis.horizontal,
+                            step: 1,
+                            haptics: true,
+                            value: p.quantity,
+                            onChanged: (value) {
+                              p.quantity = value;
+                              callbackBasketvalue();
+                            }),
                         Container(
                           child: TextButton(
                             child: Icon(Icons.delete),

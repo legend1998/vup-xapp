@@ -359,6 +359,28 @@ class Services {
     return sum;
   }
 
+  static Future<bool> forgotPassword(String mobile) async {
+    try {
+      final response = await http.post('$url/user/generatePasswordLink',
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'authorization': 'dklfhaewowi32047230jlks',
+          },
+          body: jsonEncode(<String, String>{
+            'mobile': mobile,
+          }));
+      if (200 == response.statusCode) {
+        var result = json.decode(response.body);
+        bool success = result["success"];
+        return success;
+      }
+      return false;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
   static Future<bool> addAddress(
       {String uid,
       String street,

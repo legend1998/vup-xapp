@@ -134,7 +134,8 @@ class _BasketState extends State<Basket> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => CheckOut()));
+                                      builder: (context) =>
+                                          CheckOut(basket: _basketValue)));
                             },
                             child: Text(
                               "Place Order",
