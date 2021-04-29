@@ -17,7 +17,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:vup/ReferandEarn.dart';
 import 'package:vup/Splashscreen.dart';
-import 'package:vup/about.dart';
 import 'package:vup/model/Category.dart';
 import 'package:vup/model/Coupans.dart';
 import 'package:vup/model/ProductLite.dart';
@@ -237,14 +236,6 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           ListTile(
-            leading: Icon(Icons.info_rounded),
-            title: Text("About"),
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => About()));
-            },
-          ),
-          ListTile(
             leading: Icon(Icons.exit_to_app),
             title: Text("Logout"),
             onTap: () async {
@@ -279,13 +270,21 @@ class _MyHomePageState extends State<MyHomePage> {
                           case ConnectionState.done:
                             return CarouselSlider.builder(
                               options: CarouselOptions(
+                                  viewportFraction: 1,
                                   autoPlay: true,
-                                  aspectRatio: 16 / 9,
                                   enlargeCenterPage: true),
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, index) {
                                 var image = snapshot.data[index];
-                                return Image.network(image);
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: NetworkImage(image),
+                                    ),
+                                  ),
+                                );
                               },
                             );
                           case ConnectionState.waiting:
@@ -330,13 +329,21 @@ class _MyHomePageState extends State<MyHomePage> {
                           case ConnectionState.done:
                             return CarouselSlider.builder(
                               options: CarouselOptions(
+                                  viewportFraction: 1,
                                   autoPlay: true,
-                                  aspectRatio: 16 / 9,
                                   enlargeCenterPage: true),
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, index) {
                                 var image = snapshot.data[index];
-                                return Image.network(image);
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: NetworkImage(image),
+                                    ),
+                                  ),
+                                );
                               },
                             );
                           case ConnectionState.waiting:
@@ -352,12 +359,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               alignment: Alignment.center,
                             );
                           default:
-                            return Container(
-                              height: 100,
-                              child: Center(
-                                child: Text("no banner found add banner"),
-                              ),
-                            );
+                            return Text("default");
                         }
                       }),
                   Container(

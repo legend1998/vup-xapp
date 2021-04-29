@@ -128,11 +128,11 @@ class _CheckOutState extends State<CheckOut> {
                       Fluttertoast.showToast(msg: "select address first");
                       return;
                     }
-                    openPayment(
-                        total: total,
-                        name: '${user.fname} ${user.lname}',
-                        contact: user.phone,
-                        email: user.email);
+                    // openPayment(
+                    //     total: total,
+                    //     name: '${user.fname} ${user.lname}',
+                    //     contact: user.phone,
+                    //     email: user.email);
                   },
                   label: Text("Pay now")))),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

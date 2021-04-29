@@ -5,8 +5,8 @@ import 'package:vup/ProductScreen.dart';
 import 'package:vup/model/Product.dart';
 import 'package:vup/model/ProductLite.dart';
 
-Widget productTile(ProductLite p, BuildContext context) => Card(
-      margin: EdgeInsets.all(10),
+Widget productTile(ProductLite p, BuildContext context) => Container(
+        child: Card(
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -17,31 +17,41 @@ Widget productTile(ProductLite p, BuildContext context) => Card(
                       )));
         },
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.network(
-              p.thumbnailUrl,
-              width: 100,
-            ),
-            Center(
-              child: Text(
-                p.title,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[800],
+            Container(
+                height: 100,
+                margin: EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.fitHeight,
+                    image: NetworkImage(p.thumbnailUrl),
+                  ),
+                )),
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                padding: EdgeInsets.all(5),
+                child: Text(
+                  p.title,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[800],
+                  ),
                 ),
               ),
             ),
             Text(
               '₹ ${p.offerPrice.toString()}',
-              style: TextStyle(
-                fontSize: 12,
-              ),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             )
           ],
         ),
       ),
-    );
+    ));
 
 Widget productSearchTile(ProductLite p, BuildContext context) => Card(
       child: Container(
