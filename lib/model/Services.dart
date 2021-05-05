@@ -342,8 +342,8 @@ class Services {
         person.add(user);
         print("added in box");
         return true;
-      }
-      return false;
+      } else
+        return false;
     } catch (e) {
       print(e);
       return false;

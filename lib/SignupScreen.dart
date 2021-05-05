@@ -94,6 +94,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   Container(
                       margin: EdgeInsets.only(top: 10, right: 15, left: 15),
                       child: TextFormField(
+                          maxLength: 10,
                           controller: _phoneController,
                           validator: (value) {
                             if (value.isEmpty) {
@@ -120,7 +121,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           validator: (value) {
                             if (value.isEmpty) {
                               return "enter email ";
-                            } else if (value.endsWith("@gmail.com")) {
+                            } else if (value.contains("@")) {
                               return null;
                             } else
                               return "not valid email address";
@@ -140,7 +141,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             if (value.isEmpty) {
                               return "enter password ";
                             } else if (value.length < 8) {
-                              return "smaller than 8 letters";
+                              return "must be more than 8 letters";
                             }
                             return null;
                           },
