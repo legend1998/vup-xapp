@@ -48,6 +48,38 @@ class Services {
       return false;
   }
 
+  static Future updateUser() async {
+    HiveService hiveService = new HiveService();
+
+    bool exist = await hiveService.isExists(boxName: "user");
+    if (exist) {
+      var box = await Hive.openBox("user");
+      User person = await box.getAt(0);
+      try {
+        final response = await http.get(
+          '$url/user/getuser/${person.id}',
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'authorization': 'dklfhaewowi32047230jlks'
+          },
+        );
+        if (200 == response.statusCode) {
+          final User user = userFromJson(response.body);
+          var person = await Hive.openBox("user");
+          person.putAt(0, user);
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        print(e);
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
   static Future<String> addToBasket(Products p) async {
     ProductLite newproduct = compressProduct(p);
     HiveService hiveService = new HiveService();
@@ -117,6 +149,7 @@ class Services {
           hiveService.addBoxes(products, "productslite");
           return products;
         }
+
         return <Products>[];
       } catch (e) {
         print(e);
@@ -127,28 +160,18 @@ class Services {
 
   static Future getTopBannerUrls() async {
     Reference reference = FirebaseStorage.instance.ref("/banner/top");
-    HiveService hiveService = new HiveService();
 
-    List topbannerurls = [];
-
-    bool exist = await hiveService.isExists(boxName: "topbanner");
-    if (exist) {
-      print("loaded from localdatabase");
-      topbannerurls = await hiveService.getBoxes("topbanner");
-      return topbannerurls;
-    } else {
-      try {
-        var reflist = await reference.listAll();
-        for (Reference ref in reflist.items) {
-          String imageurl = await ref.getDownloadURL();
-          topbannerurls.add(imageurl);
-        }
-        await hiveService.addBoxes(topbannerurls, "topbanner");
-        return topbannerurls;
-      } catch (e) {
-        print(e);
-        return topbannerurls;
+    List<String> topbannerurls = [];
+    try {
+      var reflist = await reference.listAll();
+      for (Reference ref in reflist.items) {
+        String imageurl = await ref.getDownloadURL();
+        topbannerurls.add(imageurl);
       }
+      return topbannerurls;
+    } catch (e) {
+      print(e);
+      return topbannerurls;
     }
   }
 
@@ -157,19 +180,16 @@ class Services {
 
     List<String> topbannerurls = [];
     try {
-      reference.listAll().then((refs) {
-        refs.items.forEach((ref) {
-          ref.getDownloadURL().then((imageurl) {
-            topbannerurls.add(imageurl);
-            print("image downloaeded");
-          });
-        });
-      });
+      var reflist = await reference.listAll();
+      for (Reference ref in reflist.items) {
+        String imageurl = await ref.getDownloadURL();
+        topbannerurls.add(imageurl);
+      }
       return topbannerurls;
     } catch (e) {
       print(e);
+      return topbannerurls;
     }
-    return topbannerurls;
   }
 
   static Future getBotBannerUrls() async {
@@ -181,7 +201,6 @@ class Services {
         refs.items.forEach((ref) {
           ref.getDownloadURL().then((imageurl) {
             botbannerurls.add(imageurl);
-            print("image downloaeded " + '$imageurl');
           });
         });
       });
@@ -201,15 +220,12 @@ class Services {
       //    this is big issues for now
       return await hiveService.getBoxes("category");
     } else {
-      print('$url/category/getcategory');
-
       try {
         final response = await http.get('$url/category/getcategory',
             headers: <String, String>{
               'Content-Type': 'application/json',
               'authorization': 'dklfhaewowi32047230jlks'
             });
-        print(response.statusCode);
         if (200 == response.statusCode) {
           final List<Category> categories = categoryFromJson(response.body);
 
@@ -285,10 +301,17 @@ class Services {
     }
   }
 
-  static Future makeOrder() async {
+  static Future makeOrder(int total) async {
     HiveService hiveService = new HiveService();
+
+    User person;
     bool exist = await hiveService.isExists(boxName: "user");
-    if (!exist) return "no user data exist";
+    if (exist) {
+      var box = await Hive.openBox("user");
+      person = await box.getAt(0);
+    } else {
+      return "something went wrong logg in again to resolve this";
+    }
 
     // so much work to do here
 
@@ -299,25 +322,25 @@ class Services {
             'authorization': 'dklfhaewowi32047230jlks',
           },
           body: jsonEncode(<String, dynamic>{
-            "totalAmount": "400",
-            "userid": "5fd845491d950472306d3e37",
-            "products": ["sdfds", "sdfd"],
-            "status": "paid"
+            "totalAmount": total,
+            "userid": person.id,
+            "products": person.cart,
+            "status": "Cash on delivery"
           }));
+
       if (200 == response.statusCode) {
-        final List<ProductLite> result = productLiteFromJson(response.body);
-        print(response.statusCode);
-        return result;
+        var result = json.decode(response.body);
+        return result["message"];
       }
     } catch (e) {
       print(e);
+      return "something went wrong try again later";
     }
   }
 
   static Future signupUser(
       String username, String email, String phone, String password) async {
-    var user = username.split(" ");
-    print(user);
+    var user = username.trim().split(" ");
     try {
       final response = await http.post(
         '$url/user/create',
@@ -334,8 +357,7 @@ class Services {
           "role": "user"
         }),
       );
-      print(response.statusCode);
-      print(response.body);
+
       if (200 == response.statusCode) {
         final User user = userFromJson(response.body);
         var person = await Hive.openBox("user");

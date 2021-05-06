@@ -256,12 +256,12 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: isOffline
-              ? [
+              ? ([
                   Container(
                       decoration: BoxDecoration(color: Color(0xff3F51B5)),
                       height: MediaQuery.maybeOf(context).size.height,
                       child: Image.asset("images/nointernet.png"))
-                ]
+                ])
               : <Widget>[
                   FutureBuilder(
                       future: _bannerTopUrls,
@@ -334,7 +334,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   enlargeCenterPage: true),
                               itemCount: snapshot.data.length,
                               itemBuilder: (context, index) {
-                                var image = snapshot.data[index];
+                                var image = snapshot?.data[index];
                                 return Container(
                                   width: MediaQuery.of(context).size.width,
                                   decoration: BoxDecoration(
@@ -363,7 +363,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         }
                       }),
                   Container(
-                    margin: EdgeInsets.only(left: 10),
+                    margin: EdgeInsets.only(left: 10, top: 20),
                     child: Text(
                       "Featured ",
                       style: TextStyle(
@@ -373,6 +373,27 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   featured(),
+                  // ElevatedButton(
+                  //     onPressed: () {
+                  //       Services.updateUser("60914aedc6ca4c00158c4ca9");
+                  //     },
+                  //     child: Text("update user"))
+                  SizedBox(
+                    height: 100,
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.blue[100],
+                    padding: EdgeInsets.only(bottom: 10, top: 20),
+                    child: Text(
+                      "Quality Bazar Pvt. Ltd.",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[800],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
                 ],
         ),
       ),

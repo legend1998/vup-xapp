@@ -24,11 +24,9 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Vup"),
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-      ),
+      // Here we take the value from the MyHomePage object that was created by
+      // the App.build method, and use it to set our appbar title.
+
       body: SingleChildScrollView(
         child: FutureBuilder(
           future: product,
@@ -42,7 +40,13 @@ class _ProductScreenState extends State<ProductScreen> {
                   ),
                 );
               case ConnectionState.done:
+                if (snapshot.data == null) {
+                  return Center(
+                    child: Text("can't load now try after some time"),
+                  );
+                }
                 Products data = snapshot.data;
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,

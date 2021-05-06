@@ -100,7 +100,8 @@ class _SignupScreenState extends State<SignupScreen> {
                             if (value.isEmpty) {
                               return "mobile number required";
                             } else {
-                              RegExp regexp = new RegExp(r'^[0-9]{10}$');
+                              RegExp regexp =
+                                  new RegExp(r'^(0/91)?[6-9][0-9]{9}');
                               if (regexp.hasMatch(value)) {
                                 return null;
                               } else

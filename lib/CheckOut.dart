@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:vup/AddressCheck.dart';
+import 'package:vup/SuccessScreen.dart';
 import 'package:vup/model/Services.dart';
 import 'package:vup/model/User.dart';
 
@@ -133,6 +134,11 @@ class _CheckOutState extends State<CheckOut> {
                     //     name: '${user.fname} ${user.lname}',
                     //     contact: user.phone,
                     //     email: user.email);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                SuccessScreen(amount: total)));
                   },
                   label: Text("Pay now")))),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

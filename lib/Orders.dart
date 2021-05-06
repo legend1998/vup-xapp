@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vup/main.dart';
+import 'package:vup/model/ProductLite.dart';
 import 'package:vup/model/Services.dart';
 import 'package:vup/utils/productTile.dart';
 
@@ -38,7 +39,8 @@ class _OrdersState extends State<Orders> {
                   child: ListView.builder(
                       itemCount: data.length,
                       itemBuilder: (context, index) {
-                        return productSearchTile(data[index], context);
+                        ProductLite product = ProductLite.fromJson(data[index]);
+                        return productSearchTile(product, context);
                       }),
                 );
               } else
